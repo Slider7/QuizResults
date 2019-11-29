@@ -39,9 +39,7 @@ class QuizReportGenerator
         $db_msg = $this->saveQuizToDB($quizData, $quests);
 //--------------------------------------------------------------------        
 
-        return $report . PHP_EOL . 'DB DATA: '. $db_msg;
-        //. PHP_EOL . 'DB DATA: '. implode(', ', $quizData) . PHP_EOL . json_encode($quests)
-        //-------------------------здесь!
+        return $report . PHP_EOL . $db_msg . 'DB DATA: '. json_encode($quizData) . PHP_EOL . json_encode($quests);
     }
 
 
@@ -147,8 +145,8 @@ class QuizReportGenerator
         {
             $result .= "{$field->getTitle()}: {$field->getValue()}" . PHP_EOL;
             //-----------------------------
-            if ($field->getTitle() === 'Program') {$quizData['program'] =  $field->getValue();};
-            if ($field->getTitle() === 'Teacher') {$quizData['teacher'] =  $field->getValue();};
+            if ($field->getTitle() === 'program') {$quizData['program'] =  $field->getValue();};
+            if ($field->getTitle() === 'teacher') {$quizData['teacher'] =  $field->getValue();};
             if ($field->getTitle() === 'stud_code') {$quizData['stud_code'] =  $field->getValue();};
             //-------------------------------------
         }
