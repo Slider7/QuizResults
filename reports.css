@@ -1,61 +1,136 @@
 .header{
   text-align: center;
 }
-
+form{
+  width: 700px;
+  margin: 0 auto;
+  border: 1px solid #202020;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  padding: 6px;
+}
+form p, label{
+  margin: 5px;
+}
 table, tr, td, th {
 	border: 1px solid dimgrey;
   border-collapse: collapse;
-  cursor: pointer;
+}
+.qr-data tr:nth-child(even) {
+  background-color: #dddddd;
+}
+th{
+  padding: 4px;
+  text-align: center;
 }
 
-.selected {
+.qr-data #qr-table{
+  cursor: pointer;
+  margin: 0 auto;
+}
+
+#qr-body .selected {
   background-color: mediumseagreen;
 }
 
 .qr-data{
   width: 90%;
+  overflow-y: scroll;
   margin: 0 auto;
   background-color: aliceblue;
+  height: 260px;
+}
+
+#qr-list-title{
+  text-align: center;
+  padding: 4px 0;
+  margin: 10px 0;
+  background: navy;
+  color: yellow;
 }
 
 .qr-data th {
 	border: 1px solid dimgrey;
   border-collapse: collapse;
-  background-color: dodgerblue;
+  background-color: navy;
   padding: 0 8px;
+  color: yellow;
 }
 
 .hidden{
   display: none;
 }
 
-.qr_detail{
-  width: 90%;
-  margin: 50px auto;
-  background-color: lightskyblue;
+.qr-detail{
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: aliceblue;
 }
-#qr-detail-table{
-  width: 90%;
-  table-layout: fixed;
+.qr-detail p{
+  margin: 0;
+  text-align: center;
+  font-weight: 700;
 }
-
-#qr-detail-table td{
-  width: auto;
-}
-
-#qr-detail-table th:nth-child(5){
-  width: 40%;
+.qr-detail-table{
+  margin: 10px auto;
 }
 
+.resizable td{
+  padding: 0 4px;
+}
+
+.resizable th {
+  text-align: center;
+}
+
+.qtext, .user-resp{
+  font-size: 12px;
+}
 .qtext{
-  overflow: hidden;
-  white-space:nowrap;
+  width: 650px;
 }
 .user-resp{
-  overflow: hidden;
-  white-space:nowrap;
+  width: 250px;
 }
-.award-p{
+.resizable .award-p{
   text-align: center;
-  width: 75px;
+  width: 60px;
+  font-weight: 700;
 }
+.bad{
+  background-color: orangered;
+}
+.good{
+  background-color: limegreen;
+}
+.report-section{
+  padding: 8px 0;
+  background-color: navy;
+  text-align: center;
+}
+.report-section p{
+  color: yellow;
+  font-weight: 700;
+}
+.report-section button{
+  margin: 0 8px;
+}
+.filter{
+  display: block;
+  margin: 4px auto;
+  padding: 4px;
+  background-color: lightsteelblue;
+  border: 1px solid #202020;
+  border-radius: 8px;
+  width: 640px;
+}
+.filter input{
+  width: 250px;
+}
+
+.rep-table td{
+  padding: 4px;
+}
+.rep-table thead tr th:nth-child(3){
+  min-width: 200px;
+} 

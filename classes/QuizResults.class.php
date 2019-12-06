@@ -18,6 +18,7 @@ class QuizResults
     public $quizTakingTimeInSeconds;
     public $formattedQuizTakingTime;
     public $version;
+    public $studentPercents;
 
     /** @var QuizDetails */
     public $detailResult;
@@ -40,6 +41,7 @@ class QuizResults
     {
         $totalPoints = $this->quizStatus->getTotalPoints();
         $studentPercent = $this->quizStatus->getStudentPercent();
+        $this->studentPercents = $studentPercent;
 
         /** @var QuizStatus|null */
         if ($totalPoints > 0)

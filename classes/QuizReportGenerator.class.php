@@ -76,9 +76,10 @@ class QuizReportGenerator
             $header .= 'Result: ' . $this->quizResults->formatStatus() . PHP_EOL;
             $header .= 'User Score: ' . $this->quizResults->formatUserScore() . PHP_EOL;
             $header .= 'Passing Score: ' . $this->quizResults->formatPassingScore() . PHP_EOL;
-
+            
             $quizData['user_score'] = $this->quizResults->formatUserScore();
             $quizData['pass_score'] = $this->quizResults->formatPassingScore();
+            $quizData['stud_percent'] = $this->quizResults->studentPercents;
         }
 
         if ($this->quizResults->formattedQuizTakingTime)
@@ -91,7 +92,6 @@ class QuizReportGenerator
         {
             $header .= "Quiz Finished At: " . $this->quizResults->detailResult->finishedAt . PHP_EOL;
         }
-
 
         return $header;
     }
@@ -221,7 +221,7 @@ private function saveQuizToDB($quizData, $quests)
         $quiz_time = $quizData['quiz_time'];
         date_default_timezone_set('Asia/Almaty');
         $finished_at = date("Y-m-d H:i:s"); 
-        //$quizData['finished_at']; 
+        $stud_percent = $quizData['stud_percent'];
         $teacher = $conn->real_escape_string($quizData['teacher']);
 
         $sql = "SELECT quiz_id FROM Quiz WHERE quiz_code = '$quiz_code'";
@@ -230,8 +230,8 @@ private function saveQuizToDB($quizData, $quests)
            $quiz_id = $temp_data->fetch_object()->quiz_id;
         };
         
-        $sql = "INSERT INTO quiz_result (quiz_id, stud_id, teacher, user_score, pass_score, quiz_time, finished_at) " .
-               " VALUES ('$quiz_id', '$stud_id', '$teacher', '$user_score', '$pass_score', '$quiz_time', '$finished_at')";
+        $sql = "INSERT INTO quiz_result (quiz_id, stud_id, teacher, user_score, pass_score, quiz_time, finished_at, stud_percent) " .
+               " VALUES ('$quiz_id', '$stud_id', '$teacher', '$user_score', '$pass_score', '$quiz_time', '$finished_at', '$stud_percent')";
           if ($conn->query($sql) === TRUE) {
             $qr_id = $conn->insert_id;
           } else {
