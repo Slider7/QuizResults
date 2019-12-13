@@ -37,7 +37,8 @@
   <p>
     Сформировать отчеты: 
     <button id='teach-rep' class="btn btn-info">Преподаватели и курсы</button>
-    <button id='question-rep' class="btn btn-info">Средний балл по вопросам</button>
+    <button id='question-rep' class="btn btn-info">Excel: средний % по вопросам</button>
+    <button id='all-rep' class="btn btn-info">Excel: выгрузка тестирований</button>
   </p>
 </section>
 
@@ -141,21 +142,20 @@
 
       let btnProbQuest = document.getElementById('question-rep');
       btnProbQuest.addEventListener("click", function(event){
-        /*let xmlhttp = new XMLHttpRequest();
-          xmlhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-              document.querySelector(".qr-detail").innerHTML = this.responseText;
-            }
-        };*/
+        let d1 = document.getElementById('qr-start').value;
+        let d2 = document.getElementById('qr-end').value;
+        let qstr = `${d1}&d2=${d2}`;
+        window.location.href = `./reports/quest-report-xls.php?d1=${qstr}`;
+      });
+      
+      let btnAllRep = document.getElementById('all-rep');
+      btnAllRep.addEventListener("click", function(event){
         let d1 = document.getElementById('qr-start').value;
         let d2 = document.getElementById('qr-end').value;
         let qstr = `${d1}&d2=${d2}`;
         window.location.href = `./reports/quest-report.php?d1=${qstr}`;
-        /*
-        xmlhttp.open("GET", `./reports/quest-report.php?d1=${qstr}` , true);
-        xmlhttp.send();*/
       });
-      
+
     </script>
 
 </body>

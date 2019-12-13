@@ -39,7 +39,7 @@ class QuizReportGenerator
         $db_msg = $this->saveQuizToDB($quizData, $quests);
 //--------------------------------------------------------------------        
 
-        return $report . PHP_EOL . $db_msg . 'DB DATA: '. json_encode($quizData) . PHP_EOL . json_encode($quests);
+        return $report . PHP_EOL . $db_msg . PHP_EOL . 'DB DATA: '. json_encode($quizData) . PHP_EOL . json_encode($quests);
     }
 
 
@@ -145,8 +145,9 @@ class QuizReportGenerator
         {
             $result .= "{$field->getTitle()}: {$field->getValue()}" . PHP_EOL;
             //-----------------------------
-            if ($field->getTitle() === 'program') {$quizData['program'] =  $field->getValue();};
-            if ($field->getTitle() === 'teacher') {$quizData['teacher'] =  $field->getValue();};
+            if ($field->getTitle() === 'Program') {$quizData['program'] =  $field->getValue();};
+            if ($field->getTitle() === 'Teacher') {$quizData['teacher'] =  $field->getValue();};
+            if ($field->getTitle() === 'Unit') {$quizData['unit'] =  $field->getValue();};
             if ($field->getTitle() === 'stud_code') {$quizData['stud_code'] =  $field->getValue();};
             //-------------------------------------
         }
@@ -196,9 +197,11 @@ private function saveQuizToDB($quizData, $quests)
         }
         
      //---------STUDENT CHECK & SAVE------------
-        $studCode = $quizData['stud_code'];
+     /*  - работаем без таблицы студент 
+        $studCode = $quizData['stud_code']; - работаем без таблицы студент
         $studName = $conn->real_escape_string($quizData['stud_name']);
-        $stud_id = 0;
+        $stud_id = 0; 
+      
         $sql = "SELECT stud_id FROM student WHERE stud_code = '$studCode'";
         $temp_data = $conn->query($sql);
         if ($temp_data->num_rows > 0) {
@@ -211,11 +214,13 @@ private function saveQuizToDB($quizData, $quests)
                     $err_msq = $err_msq . PHP_EOL . "Error: " . $sql . "<br>" . $conn->error;
                 }
         }
+      */
 
         //---------QUIZRESULT SAVE------------
+        $studName = $conn->real_escape_string($quizData['stud_name']);
         $quiz_id = -1;
         $qr_id = -1;
-        $quiz_code = $conn->real_escape_string($quizData['quiz_code']);
+        $quiz_code = $quizData['program'] . '_' . $quizData['unit'];
         $user_score = $quizData['user_score'];
         $pass_score = $quizData['pass_score'];
         $quiz_time = $quizData['quiz_time'];
@@ -230,8 +235,10 @@ private function saveQuizToDB($quizData, $quests)
            $quiz_id = $temp_data->fetch_object()->quiz_id;
         };
         
-        $sql = "INSERT INTO quiz_result (quiz_id, stud_id, teacher, user_score, pass_score, quiz_time, finished_at, stud_percent) " .
-               " VALUES ('$quiz_id', '$stud_id', '$teacher', '$user_score', '$pass_score', '$quiz_time', '$finished_at', '$stud_percent')";
+        // $sql = "INSERT INTO quiz_result (quiz_id, stud_id, teacher, user_score, pass_score, quiz_time, finished_at, stud_percent) " .
+
+        $sql = "INSERT INTO quiz_results (quiz_id, teacher, stud_name, user_score, pass_score, quiz_time, finished_at, stud_percent) " .
+               " VALUES ('$quiz_id', '$teacher', '$studName', '$user_score', '$pass_score', '$quiz_time', '$finished_at', '$stud_percent')";
           if ($conn->query($sql) === TRUE) {
             $qr_id = $conn->insert_id;
           } else {
@@ -247,22 +254,25 @@ private function saveQuizToDB($quizData, $quests)
           $award_points = $quest[3];
 
           $q_id = -1;
-          //--------------------QUESTIONS--------------------------
-          $sql = "SELECT q_id FROM question WHERE q_text like '$qtext' and quiz_code like '$quiz_code'" ;
+          //--------------------QUESTIONS--------------------------Тут надо подумать про вопросы с одинаковыми текстами
+          $sql = "SELECT q_id FROM question WHERE q_text = '$qtext' and corr_resp = '$corr_resp' and quiz_code = '$quiz_code'" ;
           $temp_data = $conn->query($sql);
+          $err_msq = $err_msq . PHP_EOL . $sql . ' $$$data: '. json_encode($temp_data->num_rows);
           if ($temp_data->num_rows > 0) {
             $q_id = $temp_data->fetch_object()->q_id;
           } else {
             $sql = "INSERT INTO question (q_text, corr_resp, quiz_code) VALUES ('$qtext', '$corr_resp', '$quiz_code')";
             if ($conn->query($sql) === TRUE) {
               $q_id = $conn->insert_id;
+              $err_msq = $err_msq . PHP_EOL . 'Q_ID:' . $q_id;
             } else {
               $err_msq = $err_msq . PHP_EOL . "Error: " . $sql . "<br>" . $conn->error;
             };
           };
           //--------------------ANSWERS--------------------------
-          if ($q_id >= 0 ) {
+          if ($q_id > 0 ) {
             $sql = "INSERT INTO answers (qr_id, q_id, award_points, user_resp) VALUES ('$qr_id', '$q_id', '$award_points', '$user_resp')";
+            $err_msq = $err_msq . PHP_EOL . $sql . ' $$$data-Q_ID: '. $q_id;
             if ($conn->query($sql) === TRUE) {
               $err_msq = $err_msq . 'ans_id = ' . $conn->insert_id . PHP_EOL;
             } else {

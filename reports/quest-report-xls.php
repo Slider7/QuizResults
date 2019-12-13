@@ -1,14 +1,29 @@
 <?php
 
-header("Content-Type: application/vnd.ms-excel; charset=utf-8");
-header("Content-Disposition: attachment; filename=quest-report.xls");
-header("Expires: 0");
-header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-header("Cache-Control: private",false);
+include_once("xlsxwriter.class.php");
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+error_reporting(E_ALL & ~E_NOTICE);
 
+$filename = "all-quest-report.xlsx";
+
+header('Content-disposition: attachment; filename="'.XLSXWriter::sanitize_filename($filename).'"');
+header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+header('Content-Transfer-Encoding: binary');
+header('Cache-Control: must-revalidate');
+header('Pragma: public');
+
+$header = array(
+  '№',
+  'Quiz-код',
+  'Преподаватель',
+  'Текст вопроса',
+  'Процент успешных ответов'
+);
+
+$rows = [];
 $d1 = $_GET['d1'];
 $d2 = $_GET['d2'];
-
 
   $servername = "localhost";
   $username = "root";
@@ -17,26 +32,32 @@ $d2 = $_GET['d2'];
         
   // Create connection
   $conn = new mysqli($servername, $username, $password, $dbname);
-	if ($conn->connect_error) {
+  if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
-	}
+  }
 
-  $sql = "SELECT q.q_id, q.quiz_code, q.q_text, cast(avg(award_points) as decimal(6, 3)) as avg_prc FROM `quiz_details` q " .
-         " WHERE CAST(finished_at AS DATE) BETWEEN '$d1' AND '$d2' group by q.q_id order by q.quiz_code, q.q_id";
+  $sql = "SELECT q.q_id, q.quiz_code, q.teacher, q.q_text, FORMAT(avg(q.result), 2, 'ru_RU') as avg_prc FROM quiz_detail q " .
+          " WHERE CAST(q.finished_at AS DATE) BETWEEN '$d1' AND '$d2' group by q.teacher, q.q_id order by q.quiz_code, q.teacher, q.q_id";
+          
   $result = $conn->query($sql);
-  //loop the query data to the table in same order as the headers
+  array_push($rows, ["Данные по всем тестам за период с $d1 по $d2:"]);
+  array_push($rows, []);
+
+  $writer = new XLSXWriter();
+  array_push($rows, $header);
   if ($result->num_rows > 0) {
-    echo "<table bordered='1'><tr><th>№</th><th>Quiz-код(курс)</th><th>Текст вопроса</th><th>Средний балл(%)</th></tr>";
     // output data of each row
       $idx = 1;
       while($row = $result->fetch_assoc()) {
-        echo "<tr><td>$idx</td><td>" . $row["quiz_code"]. "</td><td>" . $row["q_text"]. "</td><td>" .  $row["avg_prc"]. "</td></tr>";
+        array_push($rows, ["$idx", $row["quiz_code"], $row["teacher"], $row["q_text"],  $row["avg_prc"]]);
         $idx += 1;
       }
-      echo "</table>";
     } else {
-    echo "0 results";
+      array_push($rows, ["0 results"]);
   }
+  $writer->writeSheet($rows, 'Report');
+  
+  $writer->writeToStdOut();
 
   $conn->close();
 ?>
