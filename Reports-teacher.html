@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Результаты тестирований</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="cssreset.css">
+  <link rel="stylesheet" type="text/css" href="reports.css">
+</head>
+<body>
+
+<header class="header">
+  <h2>Анализ тестирований</h1>
+</header>
+
+<section class='main-report'>
+  <form action="#">
+    <fieldset>
+      <p>Выберите преподавателя: </p>    
+      <select name="teacher" id='teach-sel'> 
+        <option value="Zhainarbayeva">Жайнарбаева</option>
+        <option value="Zinatullina">Зинатуллина</option>
+        <option value="Kaipov">Каипов</option>
+        <option value="Seisembekova">Сейсембекова</option>
+      </select>
+      <br>
+      <label for="isPeriod">Учитывать период тестирований</label>
+      <input type="checkbox" value="0" name="isPeriod" id='isPeriod' onchange="checkPeriod()">
+    </fieldset>
+    <fieldset class = 'hidden' id='period'>
+      <label for="qr-start">Начальная дата:</label>
+      <input type="date" id="qr-start" name="qr-start">
+      <label for="qr-end">Конечная дата:</label>
+      <input type="date" id="qr-end" name="qr-end">
+    </fieldset>
+    <!-- input type="submit" value = 'Получить данные'/ -->
+  </form>
+  <div class='qr-data-container well'>
+    <h3 id='qr-list-title'>Список тестирований: </h3>
+    <div class='text-center filter'>Введите часть названия или ФИО для поиска: 
+      <input id="filter-input" type="text" placeholder="Поиск...">
+    </div>
+    <div class="qr-data"></div>
+  </div>
+</section>
+
+<section class="report-section hidden">
+  <p>Результаты тестов по выбранному Quiz-у: </p>
+  <div class="rep-students">
+  </div>
+</section>
+
+<section id = 'detail-report' class='hidden'>
+  <div>
+    <div class="qr-detail"></div>
+  </div>
+</section>
+
+
+<!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script> -->
+  <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
+  <script src="./js/jQuery.resizableColumns.js"></script>
+  
+  <script>
+      let d = new Date();
+      d.setDate(d.getDate() - 30);
+      document.getElementById('qr-start').valueAsDate = d;
+      document.getElementById('qr-end').valueAsDate = new Date();
+
+      function checkPeriod(){ 
+        document.getElementById('period').classList.toggle('hidden');
+      }
+      
+      document.getElementById('teach-sel').addEventListener("change", function(e){
+        document.querySelector("#detail-report").classList.add('hidden');
+        document.querySelector(".report-section").classList.add('hidden');
+        let elem = e.target;
+        let teacher_fio = elem.options[elem.selectedIndex].value;
+        let xmlhttp = new XMLHttpRequest();
+          xmlhttp.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                document.querySelector(".qr-data").innerHTML = this.responseText;
+                addTeachQuizRowHandlers();
+              }
+          };
+          let d1 = document.getElementById('qr-start').value;
+          let d2 = document.getElementById('qr-end').value;
+          let qstr = `&d1=${d1}&d2=${d2}`;
+          if (!document.getElementById('isPeriod').checked) qstr = '';
+          xmlhttp.open("GET", `./reports/teacher_quiz.php?teacher=${teacher_fio}${qstr}` , true);
+          xmlhttp.send();
+      });
+      
+      function addTeachQuizRowHandlers() {
+        if (document.getElementById("teach-quiz-table")) {
+          var rows = document.getElementById("teach-quiz-table").rows;
+          for (i = 0; i < rows.length; i++) {
+            rows[i].addEventListener("click", function(e){
+              let selected = document.querySelector('#qr-body .selected');
+              let teacher_fio = document.querySelector("#teach-sel").value;
+              if (selected) {
+                selected.classList.remove('selected');
+              }
+              e.target.parentNode.classList.add('selected');
+              let qr_rowData = {};
+              let col_names =[`rNum`, `quiz_name`, `quiz_code`, `qr_cnt`];
+              Array.prototype.forEach.call(e.target.parentNode.cells, 
+                (elem, i) => { qr_rowData[col_names[i]] = elem.textContent;
+              });
+              //console.log(qr_rowData);
+              showTeacherQuizDetais(qr_rowData['quiz_code'], teacher_fio);
+            })
+          }
+        };
+      }
+      
+      /*--тут нужно дописать--*/
+
+      function showTeacherQuizDetais(quiz_code, teacher) {
+        let xmlhttp = new XMLHttpRequest();
+          xmlhttp.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                document.querySelector(".qr-detail").innerHTML = this.responseText;
+                $('table.resizable').resizableColumns();
+              }
+          };
+          xmlhttp.open("GET", `./reports/teacher_quiz_detail.php?quiz_code=${quiz_code}&teacher=${teacher}` , true);
+          xmlhttp.send();
+          document.querySelector("#detail-report").classList.remove('hidden');
+          document.querySelector(".report-section").classList.remove('hidden');
+      }
+
+    </script>
+
+</body>
+</html>

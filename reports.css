@@ -24,9 +24,13 @@ th{
   text-align: center;
 }
 
-.qr-data #qr-table{
+.qr-data #qr-table, #teach-quiz-table{
   cursor: pointer;
   margin: 0 auto;
+}
+
+.qr-data #teach-quiz-table td, #teach-quiz-table th{
+  padding: 4px;
 }
 
 #qr-body .selected {
@@ -134,3 +138,7 @@ th{
 .rep-table thead tr th:nth-child(3){
   min-width: 200px;
 } 
+
+#teach-sel{
+  width: 200px;
+}
