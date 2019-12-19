@@ -12,21 +12,52 @@ form{
 form p, label{
   margin: 5px;
 }
+#teach-sel{
+  width: 200px;
+}
+
+#qr-data-container{
+  margin: 10px 15px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+.teach-quiz{
+  width: 30%;
+  margin: 8px;
+  border: 1px solid dimgray;
+  border-radius: 8px;
+  box-sizing: border-box;
+  float: left;
+  overflow: hidden;
+}
+#detail-report{
+  width: calc(70% - 32px);
+  margin-top: 8px;
+  border: 1px solid dimgray;
+  border-radius: 8px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
 table, tr, td, th {
-	border: 1px solid dimgrey;
+	border: 1px solid #101010;
   border-collapse: collapse;
 }
 .qr-data tr:nth-child(even) {
-  background-color: #dddddd;
+  background-color: #a0a0a0;
 }
 th{
   padding: 4px;
   text-align: center;
 }
 
-.qr-data #qr-table, #teach-quiz-table{
+.qr-data #qr-table, #teach-quiz-table, #qr-detail-table{
   cursor: pointer;
   margin: 0 auto;
+}
+#teach-quiz-table{
+  width: 100%;
 }
 
 .qr-data #teach-quiz-table td, #teach-quiz-table th{
@@ -34,49 +65,41 @@ th{
 }
 
 #qr-body .selected {
-  background-color: mediumseagreen;
+  background-color: rgb(108, 193, 247);
 }
 
-.qr-data{
-  width: 90%;
+.qr-data, .qr-detail{
   overflow-y: scroll;
-  margin: 0 auto;
   background-color: aliceblue;
-  height: 260px;
+  height: 240px;
 }
-
-#qr-list-title{
+#qr-list-title, #detail-report h4{
   text-align: center;
   padding: 4px 0;
-  margin: 10px 0;
-  background: navy;
-  color: yellow;
+  color: navy;
+  font-size: 1.25em;
 }
-
+#detail-report h4{
+  font-size: 1.1em;
+}
 .qr-data th {
 	border: 1px solid dimgrey;
   border-collapse: collapse;
   background-color: navy;
-  padding: 0 8px;
+  padding: 0 5px;
   color: yellow;
 }
 
 .hidden{
-  display: none;
+  visibility: hidden;
 }
-
-.qr-detail{
-  margin: 20px auto;
-  padding: 10px 20px;
-  background-color: aliceblue;
+.none{
+  display: none;
 }
 .qr-detail p{
   margin: 0;
   text-align: center;
   font-weight: 700;
-}
-.qr-detail-table{
-  margin: 10px auto;
 }
 
 .resizable td{
@@ -91,10 +114,10 @@ th{
   font-size: 12px;
 }
 .qtext{
-  width: 650px;
+  width: 600px;
 }
 .user-resp{
-  width: 250px;
+  width: 200px;
 }
 .resizable .award-p{
   text-align: center;
@@ -102,10 +125,10 @@ th{
   font-weight: 700;
 }
 .bad{
-  background-color: orangered;
+  background-color: rgb(221, 94, 94);
 }
 .good{
-  background-color: limegreen;
+  background-color: rgb(66, 182, 66);
 }
 .report-section{
   padding: 8px 0;
@@ -139,6 +162,14 @@ th{
   min-width: 200px;
 } 
 
-#teach-sel{
-  width: 200px;
+.answer-list{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+}
+.answer-list h4{
+  text-align: center;
+  color: navy;
 }

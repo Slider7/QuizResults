@@ -28,7 +28,7 @@
   $result = $conn->query($sql);
   $idx = 1;
   if ($result->num_rows > 0) {
-      echo "<table id='teach-quiz-table'><thead><tr><th>№</th><th>Название quiz-а</th><th>Код quiz-а</th><th>Количество тестирований</th></tr></thead><tbody id='qr-body'>";
+      echo "<table id='teach-quiz-table'><thead><tr><th>№</th><th>Название quiz-а</th><th>Код quiz-а</th><th>Количество\n тестирований</th></tr></thead><tbody id='qr-body'>";
       // output data of each row
       while($row = $result->fetch_assoc()) {
           echo "<tr><td>$idx</td><td>" . $row["quiz_name"] . "</td><td>" . $row["quiz_code"]. "</td><td>" . $row["qr_cnt"]. "</td></tr>";

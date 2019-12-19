@@ -1,6 +1,5 @@
 <?php
-  $quiz_code = $_GET['quiz_code'];
-  $teacher = $_GET['teacher'];
+  $qr_id = $_GET['qr_id'];
 
   $err_msq = 'OK';
   $servername = "localhost";
@@ -13,13 +12,14 @@
 	if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 	}
-
-  $sql = "SELECT * FROM `quiz_detail` WHERE quiz_code = '$quiz_code' and teacher like '$teacher' order by q_id";
+  if (isset($qr_id)){
+    $sql = "SELECT * FROM `quiz_detail` WHERE qr_id = '$qr_id' order by q_id";
+  };
   //echo $sql;
 	$result = $conn->query($sql);
   $idx = 1;
   if ($result->num_rows > 0) {
-    echo "<p>Данные тестирования - вопросы и ответы: </p>";
+    echo "<h4>Данные тестирования - вопросы и ответы: </h4>";
       echo "<table class='resizable qr-detail-table'><thead><tr><th>№</th><th>Quiz-код</th><th>ФИО студента</th><th>Текст вопроса</th>".
           "<th>Ответ</th><th>Баллы за ответ</th></tr></thead>";
       // output data of each row
