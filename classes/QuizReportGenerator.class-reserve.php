@@ -49,6 +49,7 @@ class QuizReportGenerator
         
         global $quizData;
 
+        $quizData['quiz_code'] =  $this->quizResults->quizTitle;
         $quizData['stud_name'] =  $this->quizResults->studentName;
         //$quizData['group'] =  $this->quizResults->studCode;
 
@@ -166,7 +167,7 @@ class QuizReportGenerator
     /*
     $quizData['quiz_code']
     $quizData['stud_name']
-    $quizData['gruppa']
+    $quizData['stud_code']
     $quizData['user_score']
     $quizData['pass_score']
     $quizData['qiuz_time']
@@ -196,11 +197,8 @@ private function saveQuizToDB($quizData, $quests)
         }
         
      //---------STUDENT CHECK & SAVE------------
-     /* // в будущем добавим таблицу студент с кодом и переделаем
-        // пока - работаем без таблицы студент 
+     /*  - работаем без таблицы студент 
         $studCode = $quizData['stud_code']; - работаем без таблицы студент
-        $gruppa = $quizData['gruppa']; 
-        
         $studName = $conn->real_escape_string($quizData['stud_name']);
         $stud_id = 0; 
       
@@ -220,7 +218,6 @@ private function saveQuizToDB($quizData, $quests)
 
         //---------QUIZRESULT SAVE------------
         $studName = $conn->real_escape_string($quizData['stud_name']);
-        $gruppa = $quizData['gruppa']; 
         $quiz_id = -1;
         $qr_id = -1;
         $quiz_code = $quizData['program'] . '_' . $quizData['unit'];
@@ -240,8 +237,8 @@ private function saveQuizToDB($quizData, $quests)
         
         // $sql = "INSERT INTO quiz_result (quiz_id, stud_id, teacher, user_score, pass_score, quiz_time, finished_at, stud_percent) " .
 
-        $sql = "INSERT INTO quiz_results (quiz_id, teacher, stud_name, user_score, pass_score, quiz_time, finished_at, stud_percent, gruppa) " .
-               " VALUES ('$quiz_id', '$teacher', '$studName', '$user_score', '$pass_score', '$quiz_time', '$finished_at', '$stud_percent', '$gruppa')";
+        $sql = "INSERT INTO quiz_results (quiz_id, teacher, stud_name, user_score, pass_score, quiz_time, finished_at, stud_percent) " .
+               " VALUES ('$quiz_id', '$teacher', '$studName', '$user_score', '$pass_score', '$quiz_time', '$finished_at', '$stud_percent')";
           if ($conn->query($sql) === TRUE) {
             $qr_id = $conn->insert_id;
           } else {
@@ -252,15 +249,13 @@ private function saveQuizToDB($quizData, $quests)
         foreach ($quests as $quest)
         {
           $qtext = $conn->real_escape_string($quest[0]);
-          $qtext = substr($qtext, 0, 60); //Проверить!!!
           $corr_resp = $conn->real_escape_string($quest[1]);
           $user_resp = $conn->real_escape_string($quest[2]);
           $award_points = $quest[3];
 
-
           $q_id = -1;
           //--------------------QUESTIONS--------------------------Тут надо подумать про вопросы с одинаковыми текстами
-          $sql = "SELECT DISTINCT q_id FROM question WHERE q_text like '$qtext%' and quiz_code = '$quiz_code'" ;
+          $sql = "SELECT q_id FROM question WHERE q_text = '$qtext' and corr_resp = '$corr_resp' and quiz_code = '$quiz_code'" ;
           $temp_data = $conn->query($sql);
           $err_msq = $err_msq . PHP_EOL . $sql . ' $$$data: '. json_encode($temp_data->num_rows);
           if ($temp_data->num_rows > 0) {

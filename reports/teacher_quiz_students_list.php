@@ -27,13 +27,13 @@
 	$result = $conn->query($sql);
   $idx = 1;
   if ($result->num_rows > 0) {
-      echo "<table class='resizable' id='qr-detail-table'><thead><tr><th>№</th><th>Преподаватель</th><th>ФИО студента</th><th>Набрано баллов</th>".
+      echo "<table class='resizable' id='qr-detail-table'><thead><tr><th>№</th><th>Преподаватель</th><th>ФИО студента</th><th>Группа</th><th>Набрано баллов</th>".
           "<th>Проходной балл</th><th>Результат-%</th><th>Длительность</th><th colspan='2'>Время завершения</th></tr></thead><tbody id='stud-list-body'>";
       // output data of each row
       while($row = $result->fetch_assoc()) {
           $resp_type = $row["user_score"] < $row["pass_score"] ? 'bad' : 'good';
           echo "<tr class='detail-row $resp_type'><td>$idx</td><td>" . $row["teacher"]. "</td><td>" . $row["stud_name"]. "</td><td>" .
-          $row["user_score"] . "</td><td>" . $row["pass_score"] . "</td><td>" . $row["stud_percent"] . "</td>" .
+          $row["gruppa"] . "</td><td>" . $row["user_score"] . "</td><td>" . $row["pass_score"] . "</td><td>" . $row["stud_percent"] . "</td>" .
           "<td>" . $row["quiz_time"] . "</td><td>" . $row["finished_at"] . "</td><td class='none'>" . $row["qr_id"] . "</td></tr>";
           $idx += 1;
         }
