@@ -239,6 +239,14 @@ private function saveQuizToDB($quizData, $quests)
         };
         
         // $sql = "INSERT INTO quiz_result (quiz_id, stud_id, teacher, user_score, pass_score, quiz_time, finished_at, stud_percent) " .
+        
+        /*-----------------Проверка повторной отправки-----------------*/
+        $sqlcheck = "SELECT * FROM quiz_results WHERE quiz_id = '$quiz_id' and stud_name like '$studName' " . 
+                    "and teacher = '$teacher' and finished_at < DATE_SUB(NOW(), INTERVAL 15 MINUTE)";
+        $temp_data = $conn->query($sqlcheck);
+        if ($temp_data->num_rows > 0) { 
+            exit('duplicate results!'); 
+        };
 
         $sql = "INSERT INTO quiz_results (quiz_id, teacher, stud_name, user_score, pass_score, quiz_time, finished_at, stud_percent, gruppa) " .
                " VALUES ('$quiz_id', '$teacher', '$studName', '$user_score', '$pass_score', '$quiz_time', '$finished_at', '$stud_percent', '$gruppa')";

@@ -37,12 +37,14 @@
   <p>
     Сформировать отчеты: 
     <button id='teach-rep' class="btn btn-info">Преподаватели и курсы</button>
+    <button id='question-rep' class="btn btn-info">Excel: средний % по вопросам</button>
     <button id='all-rep' class="btn btn-info">Excel: выгрузка тестирований</button>
   </p>
 </section>
 
 <section id = 'detail-report' class='hidden'>
   <div>
+    <!--h3 id = 'qr_detail_title' class = 'hidden'>Подробные данные: </h3-->
     <div class="qr-detail"></div>
   </div>
 </section>
@@ -76,9 +78,6 @@
           xmlhttp.send();
           //document.querySelector("#qr-list-title").classList.remove('hidden');
           document.querySelector(".qr-data-container").classList.remove('hidden');
-          document.querySelector("#detail-report").classList.remove('hidden');
-          document.querySelector(".report-section").classList.remove('hidden');
-
       }
     
       function addQuizResultRowHandlers() {
@@ -113,6 +112,8 @@
           };
           xmlhttp.open("GET", `./reports/quiz_detail.php?qr_id=${qr_id}` , true);
           xmlhttp.send();
+          document.querySelector("#detail-report").classList.remove('hidden');
+          document.querySelector(".report-section").classList.remove('hidden');
       }
     
       $(document).ready(function(){
@@ -139,6 +140,14 @@
         xmlhttp.send();
       });
 
+      let btnProbQuest = document.getElementById('question-rep');
+      btnProbQuest.addEventListener("click", function(event){
+        let d1 = document.getElementById('qr-start').value;
+        let d2 = document.getElementById('qr-end').value;
+        let qstr = `${d1}&d2=${d2}`;
+        window.location.href = `./reports/quest-report-xls.php?d1=${qstr}`;
+      });
+      
       let btnAllRep = document.getElementById('all-rep');
       btnAllRep.addEventListener("click", function(event){
         let d1 = document.getElementById('qr-start').value;

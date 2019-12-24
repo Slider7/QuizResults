@@ -24,7 +24,7 @@
       // output data of each row
       while($row = $result->fetch_assoc()) {
           $resp_type = $row["award_points"] == 0 ? 'bad' : 'good';
-          echo "<tr class='detail-row'><td>$idx</td><td>" . $row["quiz_code"]. "</td><td>" . $row["fio"]. "</td><td class='qtext'>" .
+          echo "<tr class='detail-row'><td>$idx</td><td>" . $row["quiz_code"]. "</td><td class='user-resp'>" . $row["fio"]. "</td><td class='qtext'>" .
           $row["q_text"] . "</td><td class='user-resp'>" . $row["user_resp"] . "</td>" . 
           "<td class='award-p $resp_type'>" . $row["award_points"] . "</td></tr>";
           $idx += 1;

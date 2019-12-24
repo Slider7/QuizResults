@@ -16,18 +16,24 @@
     die("Connection failed: " . $conn->connect_error);
 	}
 
-  $sql = "SELECT * FROM all_quiz_res WHERE CAST(finished_at AS DATE) BETWEEN '$d1' AND '$d2' ORDER BY quiz_code, teacher, stud_name";
+  $sql = "SELECT * FROM all_quiz_res WHERE CAST(finished_at AS DATE) BETWEEN '$d1' AND '$d2' ORDER BY teacher, quiz_code, gruppa, stud_name";
   //echo $sql;
   $result = $conn->query($sql);
   $idx = 1;
   if ($result->num_rows > 0) {
-      echo "<table id='qr-table'><thead><tr><th>№</th><th>Название quiz-а</th><th>Код</th><th>Преподаватель</th><th>ФИО студента</th>".
-          "<th>Баллы</th><th>Проходной балл</th><th>Оценка %</th><th>Дата</th><th colspan='2'>Затраченное время</th></tr></thead><tbody id='qr-body'>";
+      echo "<table id='qr-table'><thead><tr><th>№</th><th>ФИО курсанта</th><th>Преподаватель</th><th>Программа</th>".
+          "<th>Уровень</th><th>Группа</th><th>Unit</th><th>Оценка(%)</th><th>Дата</th><th colspan='2'>Затраченное время</th></tr></thead><tbody id='qr-body'>";
       // output data of each row
       while($row = $result->fetch_assoc()) {
-          echo "<tr><td>$idx</td><td>" . $row["quiz_name"] . "</td><td>" . $row["quiz_code"]. "</td><td>" . $row["teacher"]. "</td><td>" . $row["stud_name"]. "</td><td>" . 
-          $row["user_score"] . "</td><td>" . $row["pass_score"] . "</td><td>" . $row["stud_percent"] . "</td><td>" .
-          $row["finished_at"] . "</td><td>" . $row["quiz_time"] . "</td><td class='hidden'>" . $row["qr_id"] . "</td></tr>";
+          // $rest = substr("abcdef", 0, 4); возвращает "abcd"
+          // $pieces = explode(" ", $pizza);
+          $parts = explode('_', $row["quiz_code"]);
+          $program = substr($parts[0], 0, 2);
+          $level = substr($parts[0], 2);
+          $unit = $parts[1];
+          echo "<tr><td>$idx</td><td>" . $row["stud_name"] . "</td><td>" . $row["teacher"] . "</td><td> $program </td><td> $level </td><td>" . 
+          $row["gruppa"] . "</td><td> $unit </td><td>" . $row["stud_percent"] . "</td><td>" .
+          $row["finished_at"] . "</td><td>" . $row["quiz_time"] . "</td><td class='none'>" . $row["qr_id"] . "</td></tr>";
           $idx += 1;
         }
           echo "</tbody></table>";

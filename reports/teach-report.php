@@ -18,17 +18,23 @@ header("Expires: 0");
     die("Connection failed: " . $conn->connect_error);
 	}
 
-  $sql = "SELECT teacher, quiz_code, cast(avg(stud_percent) as decimal(6, 3)) as avg_prc FROM all_quiz_res " . 
-         " WHERE CAST(finished_at AS DATE) BETWEEN '$d1' AND '$d2' group by teacher";
+  $sql = "SELECT teacher, quiz_code, gruppa, cast(avg(stud_percent) as decimal(6, 3)) as avg_prc FROM all_quiz_res " . 
+         " WHERE CAST(finished_at AS DATE) BETWEEN '$d1' AND '$d2' group by teacher, quiz_code, gruppa";
   $result = $conn->query($sql);
   //loop the query data to the table in same order as the headers
   if ($result->num_rows > 0) {
-    echo "<table class='qr-detail-table rep-table'><thead><tr><th>№</th><th>Преподаватель</th><th>Quiz-код</th><th>Средний балл(%)</th>".
+    echo "<h3>Средний балл по преподавателям, программам и группам:</h3>";
+    echo "<table class='qr-detail-table rep-table'><thead><tr><th>№</th><th>Преподаватель</th><th>Группа</th><th>Program</th><th>Level</th><th>Unit</th><th>Средний балл(%)</th>".
         "</tr></thead><tbody class='rep-body'>";
     // output data of each row
       $idx = 1;
       while($row = $result->fetch_assoc()) {
-        echo "<tr><td>$idx</td><td>" . $row["teacher"]. "</td><td>" . $row["quiz_code"]. "</td><td>" .  $row["avg_prc"]. "</td></tr>";
+        $parts = explode('_', $row["quiz_code"]);
+        $program = substr($parts[0], 0, 2);
+        $level = substr($parts[0], 2);
+        $unit = $parts[1];
+        echo "<tr><td>$idx</td><td>" . $row["teacher"]. "</td><td>" . $row["gruppa"]. 
+             "</td><td>$program</td><td>$level</td><td>$unit</td><td>" . $row["avg_prc"]. "</td></tr>";
         $idx += 1;
       }
       echo "</tbody></table>";

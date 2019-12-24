@@ -39,7 +39,7 @@
 
  <main id='qr-data-container' class='hidden'>
   <div class='teach-quiz'>
-    <h3 id='qr-list-title'>Quiz-ы преподавателя: <span id='teacher-fio'></span></h3>
+    <h3 id='qr-list-title'>Quiz-ы преподавателя: </h3>
     <!--
     <div class='text-center filter'>Введите часть названия или ФИО для поиска: 
       <input id="filter-input" type="text" placeholder="Поиск...">
@@ -49,17 +49,14 @@
   </div>
   
   <div id='detail-report' class='hidden'>
-    <div class="qr-detail">
-      <table id='matrix-table'>
-        <caption id='table-title'></caption>
-        <thead id='gruppa-matrix-head'></thead>
-        <tbody id='gruppa-matrix'></tbody>
-      </table>
-    </div>
-    <hr>
-    <button onclick='tableToExcel()()'>Экспорт таблицы в Excel</button>
+    <h4>Результаты тестов по выбранному Quiz-у: </h4>
+    <div class="qr-detail"></div>
   </div>
 </main>
+
+<section class="quest-list">
+  <div class="answer-list"></div>
+</section>
 
 <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -83,13 +80,10 @@
         document.querySelector("#detail-report").classList.add('hidden');
         let elem = document.querySelector("#teach-select");
         let teacher_fio = elem.options[elem.selectedIndex].value;
-        let fio_text = elem.options[elem.selectedIndex].text;
-        document.querySelector("#teacher-fio").innerHTML = fio_text;
         let xmlhttp = new XMLHttpRequest();
           xmlhttp.onreadystatechange = function() {
               if (this.readyState == 4 && this.status == 200) {
                 document.querySelector(".qr-data").innerHTML = this.responseText;
-                document.querySelector(".qr-data").style.height = 'auto';
                 document.querySelector("#qr-data-container").classList.remove('hidden');
                 addTeachQuizRowHandlers();
               }
@@ -121,9 +115,8 @@
               quizCode += qr_rowData['level'].trim();
               quizCode += '_';
               quizCode += qr_rowData['unit'].trim();
+              alert(quizCode);
               showStudentQuizDetais(quizCode, teacher_fio, qr_rowData['gruppa']);
-              document.querySelector("#table-title").innerHTML = 
-              `Анализ тестирования ${quizCode} преподавателя ${teacher_fio}, группа ${qr_rowData['gruppa']}`; 
             })
           }
         };
@@ -131,45 +124,51 @@
 
       function showStudentQuizDetais(quiz_code, teacher, gruppa) {
         let xmlhttp = new XMLHttpRequest();
-        let qr_ids = [];
           xmlhttp.onreadystatechange = function() {
               if (this.readyState == 4 && this.status == 200) {
-                qr_ids = JSON.parse(this.responseText);
-                buildGruppaTable(qr_ids);
+                document.querySelector(".qr-detail").innerHTML = this.responseText;
+                addStudentRowHandlers();
               }
           };
-          xmlhttp.open(
-            "GET", 
-            `./reports/get-result-ids-by-gruppa.php?quiz_code=${quiz_code}&teacher=${teacher}&gruppa=${gruppa}${getPeriodQuery()}`,
-            true
-          );
+          xmlhttp.open("GET", `./reports/teacher_quiz_students_list.php?quiz_code=${quiz_code}&teacher=${teacher}${getPeriodQuery()}` , true);
           xmlhttp.send();
           document.querySelector("#detail-report").classList.remove('hidden');
+          document.querySelector("#qr-data-container").classList.remove('hidden');
       }
 
-      function buildGruppaTable(ids){
-        document.querySelector("#gruppa-matrix").innerHTML = '';
-        let xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function() {
-          if (this.readyState == 4 && this.status == 200) {
-            document.querySelector("#gruppa-matrix-head").innerHTML = 
-              `<tr><th>№п/п</th><th>ФИО курсанта</th> ${this.responseText} <th>Балл(%)</th></tr>`;
+      
+      /*--тут нужно дописать--*/
+      function addStudentRowHandlers() {
+        if (document.getElementById("qr-detail-table")) {
+          var rows = document.getElementById("qr-detail-table").rows;
+          for (i = 0; i < rows.length; i++) {
+            rows[i].addEventListener("click", function(e){
+              let selected = document.querySelector('#stud-list-body .selected');
+              if (selected) {
+                selected.classList.remove('selected');
+              }
+              e.target.parentNode.classList.add('selected');
+              let stud_rowData = [];
+              Array.prototype.forEach.call(e.target.parentNode.cells, 
+                (elem, i) => { stud_rowData.push(elem.textContent);
+              });
+              console.log(stud_rowData);
+              showTeacherQuizDetais(stud_rowData[9]);
+            })
           }
         };
-        xmlhttp.open("GET", `./reports/get-quiz-row.php?qr_id=${ids[0][0]}&is_header=1`, true);
-        xmlhttp.send();
+      }
 
-        ids.forEach(function(item, i) {
-          let xmlhttp = new XMLHttpRequest();
+      function showTeacherQuizDetais(qr_id) {
+        let xmlhttp = new XMLHttpRequest();
           xmlhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-              document.querySelector("#gruppa-matrix").innerHTML += 
-                `<tr><td>${i+1}</td><td>${item[1]}</td> ${this.responseText} <td class='result-prc'>${item[2]}</td></tr>`;
-            }
+              if (this.readyState == 4 && this.status == 200) {
+                document.querySelector(".answer-list").innerHTML = this.responseText;
+              }
           };
-          xmlhttp.open("GET", `./reports/get-quiz-row.php?qr_id=${item[0]}`, true);
-          xmlhttp.send();
-        });
+        xmlhttp.open("GET", `./reports/teacher_quiz_detail.php?qr_id=${qr_id}` , true);
+        xmlhttp.send();
+        document.querySelector(".answer-list").classList.remove('hidden');
       }
 
       function getPeriodQuery(){
@@ -178,22 +177,6 @@
         let d2 = document.getElementById('qr-end').value;
         return `&d1=${d1}&d2=${d2}`;
       }
-
-      function tableToExcel() {
-        let uri = 'data:application/vnd.ms-excel;base64,', 
-            template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>',
-            base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) },
-            format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) };
-        return function() {
-          table = document.getElementById('matrix-table');
-          let ctx = {worksheet: 'Отчет', table: table.innerHTML};
-          //window.location.href = uri + base64(format(template, ctx));
-          let link = document.createElement("a");
-          link.download = document.querySelector("#teach-select").value + '.xls';
-          link.href = uri + base64(format(template, ctx));
-          link.click();
-        }
-      };
 
     </script>
 

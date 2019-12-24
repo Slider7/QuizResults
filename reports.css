@@ -13,31 +13,25 @@ form p, label{
   margin: 5px;
 }
 #teach-sel{
-  width: 200px;
+  width: 250px;
 }
 
 #qr-data-container{
   margin: 10px 15px;
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+  flex-direction: column;
+  justify-content: center;
 }
 .teach-quiz{
-  width: 30%;
-  margin: 8px;
-  border: 1px solid dimgray;
-  border-radius: 8px;
-  box-sizing: border-box;
-  float: left;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
 }
 #detail-report{
-  width: calc(70% - 32px);
-  margin-top: 8px;
-  border: 1px solid dimgray;
-  border-radius: 8px;
+  margin: 8px auto;
+  padding: 5px;
   box-sizing: border-box;
-  overflow: hidden;
 }
 
 table, tr, td, th {
@@ -57,7 +51,7 @@ th{
   margin: 0 auto;
 }
 #teach-quiz-table{
-  width: 100%;
+  width: 33%;
 }
 
 .qr-data #teach-quiz-table td, #teach-quiz-table th{
@@ -68,10 +62,10 @@ th{
   background-color: rgb(108, 193, 247);
 }
 
-.qr-data, .qr-detail{
-  overflow-y: scroll;
+.qr-data{
   background-color: aliceblue;
-  height: 240px;
+  height: 250px;
+  overflow-y: auto;
 }
 #qr-list-title, #detail-report h4{
   text-align: center;
@@ -118,6 +112,8 @@ th{
 }
 .user-resp{
   width: 200px;
+  height: 15px;
+  overflow: hidden;
 }
 .resizable .award-p{
   text-align: center;
@@ -159,7 +155,7 @@ th{
   padding: 4px;
 }
 .rep-table thead tr th:nth-child(3){
-  min-width: 200px;
+  min-width: 300px;
 } 
 
 .answer-list{
@@ -173,3 +169,24 @@ th{
   text-align: center;
   color: navy;
 }
+.qr-detail table #gruppa-matrix-head .matrix-th{
+  width: 40px;
+}
+.qr-detail table #gruppa-matrix .err{
+  background-color: darkred;
+  color: white;
+  text-align: center;
+}
+
+.qr-detail table #gruppa-matrix .ok{
+  background-color: green;
+  color: white;
+  text-align: center;
+}
+#gruppa-matrix .result-prc{
+  text-align: center;
+  font-weight: 700;
+}
+#gruppa-matrix tr td:nth-child(1){
+  text-align: center;
+} 
