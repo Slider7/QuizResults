@@ -241,8 +241,9 @@ private function saveQuizToDB($quizData, $quests)
         // $sql = "INSERT INTO quiz_result (quiz_id, stud_id, teacher, user_score, pass_score, quiz_time, finished_at, stud_percent) " .
         
         /*-----------------Проверка повторной отправки-----------------*/
+        /* $_SERVER['REMOTE_ADDR'] */
         $sqlcheck = "SELECT * FROM quiz_results WHERE quiz_id = '$quiz_id' and stud_name like '$studName' " . 
-                    "and teacher = '$teacher' and finished_at < DATE_SUB(NOW(), INTERVAL 15 MINUTE)";
+                    "and teacher = '$teacher' and finished_at > DATE_SUB(NOW(), INTERVAL 5 MINUTE)";
         $temp_data = $conn->query($sqlcheck);
         if ($temp_data->num_rows > 0) { 
             exit('duplicate results!'); 
@@ -267,7 +268,7 @@ private function saveQuizToDB($quizData, $quests)
 
 
           $q_id = -1;
-          //--------------------QUESTIONS--------------------------Тут надо подумать про вопросы с одинаковыми текстами
+          //--------------------QUESTIONS--------------------------
           $sql = "SELECT DISTINCT q_id FROM question WHERE q_text like '$qtext%' and quiz_code = '$quiz_code'" ;
           $temp_data = $conn->query($sql);
           $err_msq = $err_msq . PHP_EOL . $sql . ' $$$data: '. json_encode($temp_data->num_rows);

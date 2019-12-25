@@ -171,6 +171,7 @@ th{
 }
 .qr-detail table #gruppa-matrix-head .matrix-th{
   width: 40px;
+  word-wrap: none;
 }
 .qr-detail table #gruppa-matrix .err{
   background-color: darkred;
@@ -189,4 +190,4 @@ th{
 }
 #gruppa-matrix tr td:nth-child(1){
   text-align: center;
-} 
+}
