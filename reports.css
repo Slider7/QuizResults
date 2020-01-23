@@ -171,6 +171,7 @@ th{
 }
 .qr-detail table #gruppa-matrix-head .matrix-th{
   width: 40px;
+  word-wrap: none;
 }
 .qr-detail table #gruppa-matrix .err{
   background-color: darkred;
@@ -188,5 +189,31 @@ th{
   font-weight: 700;
 }
 #gruppa-matrix tr td:nth-child(1){
+  text-align: left;
+}
+
+.fio-stud{
+  width: 250px;
+}
+
+.add-quiz{
+  margin-top: 10px;
   text-align: center;
-} 
+}
+.add-quiz label{
+  width: 110px;
+  margin: 8px 0;
+}
+.add-quiz input[type='text']{
+    width: 250px;
+}
+
+.add-quiz input[type='submit']{
+  margin-left: 200px;
+}
+.add-quiz-form{
+  margin-top: 8px;
+}
+.hidden-form{
+  display: none;
+}

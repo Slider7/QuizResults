@@ -26,7 +26,7 @@
           $isOk = 'err';
         } else { $isOk = 'ok'; };
         if (isset($is_header) && $is_header == 1) {
-          $tablerow .= "<th class='matrix-th'>&nbsp&nbsp&nbsp $idx &nbsp&nbsp&nbsp</th>";
+          $tablerow .= "<th class='matrix-th'>&nbsp&nbsp&nbsp$idx&nbsp&nbsp&nbsp</th>";
         } else {
           $tablerow .= "<td class='$isOk'>" . $row["result"] . "</td>";
         }

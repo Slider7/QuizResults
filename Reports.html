@@ -24,6 +24,26 @@
       <input type="submit" value = 'Получить данные'/>
     </fieldset>
   </form>
+  
+  <div class='add-quiz'>
+    <button id='addQuiz' class="btn btn-info">Показать форму Quiz-a</button>
+    <form action="javascript:addQuiz()" name='addquiz' class = 'add-quiz-form hidden-form'>
+      <fieldset>
+        <p>Введите данные quiz-а: </p>
+        <label for="q-name">Наименование: </label>
+        <input type="text" id="q-name" name="q-name" placeholder="например, Family&Friends Unit1">
+        <br>
+        <label for="q-program">Программа:</label>
+        <input type="text" id="q-program" name="q-program" placeholder="например, GEa2">
+        </br>
+        <label for="q-unit">Unit:</label>
+        <input type="number" id="q-unit" name="q-unit" min="0" max="20" value='0'>
+        <input type="submit" value = 'Сохранить'/>
+      </fieldset>
+      <p id='add-result'></p>
+    </form>
+  </div>
+
   <div class='qr-data-container well hidden'>
     <h3 id='qr-list-title'>Список тестирований: </h3>
     <div class='text-center filter'>Введите часть названия или ФИО для поиска: 
@@ -60,6 +80,17 @@
       d.setDate(d.getDate() - 5);
       document.getElementById('qr-start').valueAsDate = d;
       document.getElementById('qr-end').valueAsDate = new Date();
+      
+      let addQuizBtn = document.querySelector('#addQuiz');
+      addQuizBtn.addEventListener("click", function(e){
+        document.querySelector('.add-quiz-form').classList.toggle('hidden-form');
+        if (addQuizBtn.textContent == 'Показать форму Quiz-a') {
+          addQuizBtn.textContent = 'Закрыть форму Quiz-a';
+        } else {
+          addQuizBtn.textContent = 'Показать форму Quiz-a';
+        }
+        
+      });
     
       function showQuizzes() {
         let xmlhttp = new XMLHttpRequest();
@@ -146,6 +177,25 @@
         let qstr = `${d1}&d2=${d2}`;
         window.location.href = `./reports/quest-report.php?d1=${qstr}`;
       });
+
+      function addQuiz() {
+        let xmlhttp = new XMLHttpRequest();
+          xmlhttp.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                document.querySelector("#add-result").innerHTML = this.responseText;
+              }
+          };
+          let qProgram = document.querySelector('#q-program').value;
+          let qUnit = document.querySelector('#q-unit').value;
+          let qCode = `${qProgram}_${qUnit}`;
+
+          var formData = new FormData(document.forms.addquiz);
+          // добавить к пересылке ещё пару ключ - значение
+          formData.append("q-code", qCode);
+          // отослать
+          xmlhttp.open("POST", `./reports/addQuiz.php` , true);
+          xmlhttp.send(formData);
+      }
 
     </script>
 

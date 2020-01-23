@@ -18,7 +18,6 @@
     <fieldset>
       <p>Выберите преподавателя: </p>    
       <select name="teacher" id='teach-select'> 
-      	<option value="all">Все преподаватели</option>
         <option value="Zhainarbayeva">Жайнарбаева</option>
         <option value="Zinatullina">Зинатуллина</option>
         <option value="Kaipov">Каипов</option>
@@ -100,22 +99,21 @@
       };
 
       document.getElementById('teach-select').addEventListener("change", selectTeacher, false);
-      selectTeacher();
-
+      
       function addTeachQuizRowHandlers() {
         if (document.getElementById("teach-quiz-table")) {
           var rows = document.getElementById("teach-quiz-table").rows;
           for (i = 0; i < rows.length; i++) {
             rows[i].addEventListener("click", function(e){
               let selected = document.querySelector('#qr-body .selected');
-              // let teacher_fio = document.querySelector("#teach-select").value;
+              let teacher_fio = document.querySelector("#teach-select").value;
               let quizCode = '';
               if (selected) {
                 selected.classList.remove('selected');
               }
               e.target.parentNode.classList.add('selected');
               let qr_rowData = {};
-              let col_names =[`rNum`, `teacher`, `program`, `level`, `unit`, `gruppa`];
+              let col_names =[`rNum`, `program`, `level`, `unit`, `gruppa`];
               Array.prototype.forEach.call(e.target.parentNode.cells, 
                 (elem, i) => { qr_rowData[col_names[i]] = elem.textContent;
               });
@@ -123,7 +121,7 @@
               quizCode += qr_rowData['level'].trim();
               quizCode += '_';
               quizCode += qr_rowData['unit'].trim();
-              showStudentQuizDetais(quizCode, qr_rowData['teacher'].trim(), qr_rowData['gruppa']);
+              showStudentQuizDetais(quizCode, teacher_fio, qr_rowData['gruppa']);
               document.querySelector("#table-title").innerHTML = 
               `Анализ тестирования ${quizCode} преподавателя ${teacher_fio}, группа ${qr_rowData['gruppa']}`; 
             })
@@ -155,7 +153,7 @@
         xmlhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
             document.querySelector("#gruppa-matrix-head").innerHTML = 
-              `<tr><th class='fio-stud'>ФИО курсанта</th> ${this.responseText} <th>Балл(%)</th></tr>`;
+              `<tr><th>ФИО курсанта</th> ${this.responseText} <th>Балл(%)</th></tr>`;
           }
         };
         xmlhttp.open("GET", `./reports/get-quiz-row.php?qr_id=${ids[0][0]}&is_header=1`, true);
