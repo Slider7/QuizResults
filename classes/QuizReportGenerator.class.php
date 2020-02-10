@@ -9,7 +9,7 @@ class QuizReportGenerator
 
     private $quizResults;
 
-    var $quizData = [], $quests = [];
+    var $quizData = [], $quests = [], $temp = [];
 
     /** @var QuizTakerInfo|null */
     private $takerInfo;
@@ -21,7 +21,7 @@ class QuizReportGenerator
 
     public function createReport()
     {
-        global $quizData, $quests;
+        global $quizData, $quests, $temp;
 
         $report = $this->fetchTemplateHeader();
         $details = $this->quizResults->detailResult;
@@ -39,7 +39,8 @@ class QuizReportGenerator
         $db_msg = $this->saveQuizToDB($quizData, $quests);
 //--------------------------------------------------------------------        
 
-        return $report . PHP_EOL . $db_msg . PHP_EOL . 'DB DATA: '. json_encode($quizData) . PHP_EOL . json_encode($quests);
+        return $report . PHP_EOL . $db_msg;
+        /*. PHP_EOL . 'DB DATA: '. json_encode($quizData) . PHP_EOL . json_encode($quests) . PHP_EOL . '!!!Questions: ' .json_encode($temp); */
     }
 
 
@@ -117,6 +118,7 @@ class QuizReportGenerator
         $item[1] = $question->correctAnswer;
         $item[2] = $question->userAnswer;
         $item[3] = $question->awardedPoints;
+        $item[4] = $question->maxPoints;
 
         $quests[$k] = $item;
 
@@ -265,7 +267,7 @@ private function saveQuizToDB($quizData, $quests)
           $corr_resp = $conn->real_escape_string($quest[1]);
           $user_resp = $conn->real_escape_string($quest[2]);
           $award_points = $quest[3];
-
+          $max_points = $quest[4];
 
           $q_id = -1;
           //--------------------QUESTIONS--------------------------
@@ -275,7 +277,7 @@ private function saveQuizToDB($quizData, $quests)
           if ($temp_data->num_rows > 0) {
             $q_id = $temp_data->fetch_object()->q_id;
           } else {
-            $sql = "INSERT INTO question (q_text, corr_resp, quiz_code) VALUES ('$qtext', '$corr_resp', '$quiz_code')";
+            $sql = "INSERT INTO question (q_text, corr_resp, quiz_code, maxpoint) VALUES ('$qtext', '$corr_resp', '$quiz_code', '$max_points')";
             if ($conn->query($sql) === TRUE) {
               $q_id = $conn->insert_id;
               $err_msq = $err_msq . PHP_EOL . 'Q_ID:' . $q_id;

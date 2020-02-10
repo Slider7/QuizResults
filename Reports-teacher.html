@@ -155,7 +155,7 @@
         xmlhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
             document.querySelector("#gruppa-matrix-head").innerHTML = 
-              `<tr><th class='fio-stud'>ФИО курсанта</th> ${this.responseText} <th>Балл(%)</th></tr>`;
+              `<tr><th class='fio-stud'>ФИО курсанта</th> ${this.responseText} <th>Результат(%)</th></tr>`;
           }
         };
         xmlhttp.open("GET", `./reports/get-quiz-row.php?qr_id=${ids[0][0]}&is_header=1`, true);

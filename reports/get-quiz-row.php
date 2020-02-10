@@ -14,7 +14,7 @@
     die("Connection failed: " . $conn->connect_error);
 	}
 
-  $sql = "SELECT SUBSTRING(q_text, 1, 3) as qtext, result FROM quiz_detail WHERE qr_id = '$qr_id' order by q_text";
+  $sql = "SELECT SUBSTRING(q_text, 1, 3) as qtext,  concat(award_points, '/' , maxpoint) as points, result FROM quiz_detail2 WHERE qr_id = '$qr_id' order by q_text";
   //echo $sql;
 	$result = $conn->query($sql);
   if ($result->num_rows > 0) {
@@ -28,7 +28,7 @@
         if (isset($is_header) && $is_header == 1) {
           $tablerow .= "<th class='matrix-th'>&nbsp&nbsp&nbsp$idx&nbsp&nbsp&nbsp</th>";
         } else {
-          $tablerow .= "<td class='$isOk'>" . $row["result"] . "</td>";
+          $tablerow .= "<td class='$isOk'>" . $row["points"] . "</td>";
         }
         $idx++;
       }

@@ -6,6 +6,7 @@ abstract class Question
     public $direction;
     public $userAnswer;
     public $correctAnswer;
+    public $maxPoints;
 
     /** @var bool */
     private $evaluationEnabled = null;
@@ -26,6 +27,7 @@ abstract class Question
         if ($this->isGraded())
         {
             $this->awardedPoints = $node->getAttribute('awardedPoints');
+            $this->maxPoints = $node->getAttribute('maxPoints');
         }
 
         $directionNode = $node->getElementsByTagName('direction')->item(0);
@@ -46,5 +48,6 @@ abstract class Question
         $this->direction = null;
         $this->userAnswer = null;
         $this->correctAnswer = null;
+        $this->maxPoints = null;
     }
 }
