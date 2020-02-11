@@ -13,7 +13,7 @@
     die("Connection failed: " . $conn->connect_error);
 	}
   if (isset($qr_id)){
-    $sql = "SELECT * FROM `quiz_detail` WHERE qr_id = '$qr_id' order by q_id";
+    $sql = "SELECT * FROM `quiz_detail2` WHERE qr_id = '$qr_id' order by q_id";
   };
   //echo $sql;
 	$result = $conn->query($sql);

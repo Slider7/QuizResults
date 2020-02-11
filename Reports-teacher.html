@@ -19,10 +19,6 @@
       <p>Выберите преподавателя: </p>    
       <select name="teacher" id='teach-select'> 
       	<option value="all">Все преподаватели</option>
-        <option value="Zhainarbayeva">Жайнарбаева</option>
-        <option value="Zinatullina">Зинатуллина</option>
-        <option value="Kaipov">Каипов</option>
-        <option value="Seisembekova">Сейсембекова</option>
       </select>
       <br>
       <label for="isPeriod">Учитывать период тестирований</label>
@@ -78,7 +74,30 @@
       function checkPeriod(){ 
         document.getElementById('period').classList.toggle('none');
       }
-      
+      //асинхронное получение списка из Php скрипта
+      function fillTeachersList(){
+        let teachSel = document.querySelector("#teach-select");
+        getTeacherList(`./reports/teachers.php`)
+          .then((data) => {
+            if (data.length > 0) {
+              data.forEach((item)=>{
+                let opt = document.createElement('option');
+                opt.appendChild( document.createTextNode(item) );
+                opt.value = item; 
+                teachSel.appendChild(opt); 
+              });
+            }
+          })
+          .catch(error => console.error(error));
+      }
+
+      function getTeacherList(url) {
+          return fetch(url)
+          .then(response => response.json()); // парсит JSON ответ в Javascript объект
+      }
+
+      fillTeachersList();
+
       function selectTeacher(e){
         document.querySelector("#qr-data-container").classList.add('hidden');
         document.querySelector("#detail-report").classList.add('hidden');
@@ -98,6 +117,8 @@
         xmlhttp.open("GET", `./reports/teacher_quiz.php?teacher=${teacher_fio}${getPeriodQuery()}` , true);
         xmlhttp.send();
       };
+
+
 
       document.getElementById('teach-select').addEventListener("change", selectTeacher, false);
       selectTeacher();
