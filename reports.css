@@ -173,20 +173,25 @@ th{
   width: 40px;
   word-wrap: none;
 }
+.qr-detail table #gruppa-matrix td{
+  font-size: 10pt;
+}
 .qr-detail table #gruppa-matrix .err{
   background-color: darkred;
   color: white;
   text-align: center;
 }
-
 .qr-detail table #gruppa-matrix .ok{
   background-color: green;
   color: white;
   text-align: center;
 }
-#gruppa-matrix .result-prc{
+.qr-detail table #gruppa-matrix .result-prc{
   text-align: center;
+  vertical-align: middle;
   font-weight: 700;
+  font-size: 12pt;
+  width: 50px !important;
 }
 #gruppa-matrix tr td:nth-child(1){
   text-align: left;

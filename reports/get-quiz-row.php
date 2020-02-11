@@ -14,7 +14,7 @@
     die("Connection failed: " . $conn->connect_error);
 	}
 
-  $sql = "SELECT SUBSTRING(q_text, 1, 3) as qtext,  concat(award_points, '/' , maxpoint) as points, result FROM quiz_detail2 WHERE qr_id = '$qr_id' order by q_text";
+  $sql = "SELECT SUBSTRING(q_text, 1, 3) as qtext,  concat(award_points, '/', maxpoint, ' ', round((award_points*100)/maxpoint), '%') as points, result FROM quiz_detail2 WHERE qr_id = '$qr_id' order by q_text";
   //echo $sql;
 	$result = $conn->query($sql);
   if ($result->num_rows > 0) {

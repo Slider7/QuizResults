@@ -108,7 +108,7 @@
           for (i = 0; i < rows.length; i++) {
             rows[i].addEventListener("click", function(e){
               let selected = document.querySelector('#qr-body .selected');
-              // let teacher_fio = document.querySelector("#teach-select").value;
+              let teacher_fio = document.querySelector("#teach-select").value;
               let quizCode = '';
               if (selected) {
                 selected.classList.remove('selected');
@@ -155,7 +155,9 @@
         xmlhttp.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
             document.querySelector("#gruppa-matrix-head").innerHTML = 
-              `<tr><th class='fio-stud'>ФИО курсанта</th> ${this.responseText} <th>Результат(%)</th></tr>`;
+              `<tr><th class='fio-stud'>ФИО курсанта</th> ${this.responseText} 
+              <th>Проходной балл</th><th>Получено баллов</th><th>Результат(%)</th>
+              <th>Статус</th></tr>`;
           }
         };
         xmlhttp.open("GET", `./reports/get-quiz-row.php?qr_id=${ids[0][0]}&is_header=1`, true);
@@ -163,10 +165,22 @@
 
         ids.forEach(function(item, i) {
           let xmlhttp = new XMLHttpRequest();
+          let isOk = '', res = '';
+          if (item[3] < item[4]) {
+            isOk = 'bad';
+            res = 'fail';
+          } else {
+            isOk = 'good';
+            res = 'OK';
+          } 
+
           xmlhttp.onreadystatechange = function() {	
             if (this.readyState == 4 && this.status == 200) {
           	     document.querySelector("#gruppa-matrix").innerHTML += 
-            	 `<tr><td>${item[1]}</td> ${this.responseText} <td class='result-prc'>${item[2]}</td></tr>`;
+            	 `<tr><td>${item[1]}</td> ${this.responseText} <td class='result-prc'>${item[4]}</td>
+               <td class='result-prc'>${item[3]}</td><td class='result-prc'>${item[2]}</td>
+               <td class='result-prc ${isOk}'>${res}</td>
+               </tr>`;
             }
           };
           xmlhttp.open("GET", `./reports/get-quiz-row.php?qr_id=${item[0]}`, true);
