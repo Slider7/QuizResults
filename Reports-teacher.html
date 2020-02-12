@@ -187,7 +187,7 @@
         ids.forEach(function(item, i) {
           let xmlhttp = new XMLHttpRequest();
           let isOk = '', res = '';
-          if (item[3] < item[4]) {
+          if (parseFloat(item[3]) < parseFloat(item[4])) {
             isOk = 'bad';
             res = 'fail';
           } else {
@@ -198,8 +198,10 @@
           xmlhttp.onreadystatechange = function() {	
             if (this.readyState == 4 && this.status == 200) {
           	     document.querySelector("#gruppa-matrix").innerHTML += 
-            	 `<tr><td>${item[1]}</td> ${this.responseText} <td class='result-prc'>${item[4]}</td>
-               <td class='result-prc'>${item[3]}</td><td class='result-prc'>${item[2]}</td>
+            	 `<tr><td>${item[1]}</td> ${this.responseText} 
+               <td class='result-prc'>${item[4]}</td>
+               <td class='result-prc'>${item[3]}</td>
+               <td class='result-prc'>${item[2]}</td>
                <td class='result-prc ${isOk}'>${res}</td>
                </tr>`;
             }
@@ -223,7 +225,23 @@
             format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) };
         return function() {
           table = document.getElementById('matrix-table');
-          let ctx = {worksheet: 'Отчет', table: table.innerHTML};
+          let tStr = table.innerHTML;
+          let re = /ans">(.*?)<\/td>/g;
+          matchAll = tStr.matchAll(re); //классный метод matchAll !!!
+          matchAll = Array.from(matchAll);
+          let findStr = matchAll.map(elem=>elem[1]);
+          let points = findStr.map(str=> {
+            let d = str.indexOf('/');
+            let a = parseFloat(str.substr(0, d));
+            let b = parseFloat(str.substr(d+1));
+            return (a/b).toFixed(3);
+          });
+
+          findStr.forEach((elem, i)=>{
+            tStr = tStr.replace(elem, points[i].replace('.', ','));
+          });
+          // console.log(tStr);
+          let ctx = {worksheet: 'Отчет', table: tStr};
           //window.location.href = uri + base64(format(template, ctx));
           let link = document.createElement("a");
           link.download = document.querySelector("#teach-select").value + '.xls';

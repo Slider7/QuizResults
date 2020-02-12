@@ -14,17 +14,17 @@
     die("Connection failed: " . $conn->connect_error);
 	}
 
-  $sql = "SELECT SUBSTRING(q_text, 1, 3) as qtext,  concat(award_points, '/', maxpoint, ' ', round((award_points*100)/maxpoint), '%') as points, result FROM quiz_detail2 WHERE qr_id = '$qr_id' order by q_text";
+  $sql = "SELECT SUBSTRING(q_text, 1, 3) as qtext,  concat(award_points, '/', maxpoint) as points, result FROM quiz_detail2 WHERE qr_id = '$qr_id' order by q_text";
   //echo $sql;
 	$result = $conn->query($sql);
   if ($result->num_rows > 0) {
       $tablerow = '';
-      $isOk = 'ok';
+      $isOk = 'ok ans';
       $idx = 1;
       while($row = $result->fetch_assoc()) {
         if ($row["result"] == 0){
-          $isOk = 'err';
-        } else { $isOk = 'ok'; };
+          $isOk = 'err ans';
+        } else { $isOk = 'ok ans'; };
         if (isset($is_header) && $is_header == 1) {
           $tablerow .= "<th class='matrix-th'>&nbsp&nbsp&nbsp$idx&nbsp&nbsp&nbsp</th>";
         } else {

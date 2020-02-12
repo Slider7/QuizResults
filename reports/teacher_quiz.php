@@ -21,10 +21,10 @@
   };
   if (isset($d1) && isset($d2)){
     $sql = "SELECT teacher, quiz_code, gruppa, count(*) as qr_cnt, FORMAT(avg(stud_percent), 2) as avg_prc FROM all_quiz_res " . 
-         " WHERE CAST(finished_at AS DATE) BETWEEN '$d1' AND '$d2'  AND teacher like '$teacher' group by quiz_code, gruppa order by teacher, quiz_code";
+         " WHERE CAST(finished_at AS DATE) BETWEEN '$d1' AND '$d2'  AND teacher like '$teacher' group by teacher, quiz_code, gruppa order by teacher, quiz_code";
   } else {
     $sql = "SELECT teacher, quiz_code, gruppa, count(*) as qr_cnt, FORMAT(avg(stud_percent), 2) as avg_prc FROM all_quiz_res " . 
-         " WHERE teacher like '$teacher' group by quiz_code, gruppa order by teacher, quiz_code";
+         " WHERE teacher like '$teacher' group by teacher, quiz_code, gruppa order by teacher, quiz_code";
   };
   //echo $sql;
   $result = $conn->query($sql);
