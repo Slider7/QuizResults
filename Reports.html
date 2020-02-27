@@ -27,7 +27,7 @@
   
   <div class='add-quiz'>
     <button id='addQuiz' class="btn btn-info">Показать форму Quiz-a</button>
-    <form action="javascript:addQuiz()" name='addquiz' class = 'add-quiz-form hidden-form'>
+    <form action="#" name='addquiz' class = 'add-quiz-form hidden-form' onsubmit="addQuiz()">
       <fieldset>
         <p>Введите данные quiz-а: </p>
         <label for="q-name">Наименование: </label>
@@ -46,9 +46,9 @@
 
   <div class='qr-data-container well hidden'>
     <h3 id='qr-list-title'>Список тестирований: </h3>
-    <div class='text-center filter'>Введите часть названия или ФИО для поиска: 
+    <!--div class='text-center filter'>Введите часть названия или ФИО для поиска: 
       <input id="filter-input" type="text" placeholder="Поиск...">
-    </div>
+    </div-->
     <div class="qr-data"></div>
   </div>
 </section>
@@ -75,6 +75,9 @@
   <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
   <script src="./js/jQuery.resizableColumns.js"></script>
   
+  <script src="./js/addQuiz.js"></script>
+  
+
   <script>
       let d = new Date();
       d.setDate(d.getDate() - 5);

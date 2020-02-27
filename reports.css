@@ -1,8 +1,18 @@
 .header{
   text-align: center;
 }
+
+.main-report{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+#showAddRep{
+  margin: 16px;
+}
 form{
-  width: 700px;
+  width: 550px;
   margin: 0 auto;
   border: 1px solid #202020;
   border-radius: 10px;

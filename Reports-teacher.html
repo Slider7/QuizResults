@@ -14,6 +14,7 @@
 </header>
 
 <section class='main-report'>
+  <div>
   <form action="#">
     <fieldset>
       <p>Выберите преподавателя: </p>    
@@ -30,9 +31,37 @@
       <label for="qr-end">Конечная дата:</label>
       <input type="date" id="qr-end" name="qr-end" onchange="selectTeacher()">
     </fieldset>
-    <!-- input type="submit" value = 'Получить данные'/ -->
   </form>
+</div>
+  <button id='showAddRep' class="btn btn-info">Дополнительно</button>
 </section>
+
+<section class="report-section hidden">
+  <p>
+    <button id='addQuiz' class="btn btn-info">Показать форму Quiz-a</button>
+    Сформировать отчеты: 
+    <button id='teach-rep' class="btn btn-info">Преподаватели и курсы</button>
+    <button id='all-rep' class="btn btn-info">Excel: выгрузка тестирований</button>
+  </p>
+</section>
+
+<div class='add-quiz'>
+  <form action="javascript:addQuiz()" name='addquiz' class = 'add-quiz-form hidden-form'>
+    <fieldset>
+      <p>Введите данные quiz-а: </p>
+      <label for="q-name">Наименование: </label>
+      <input type="text" id="q-name" name="q-name" placeholder="например, Family&Friends Unit1">
+      <br>
+      <label for="q-program">Программа:</label>
+      <input type="text" id="q-program" name="q-program" placeholder="например, GEa2">
+      </br>
+      <label for="q-unit">Unit:</label>
+      <input type="number" id="q-unit" name="q-unit" min="0" max="20" value='0'>
+      <input type="submit" value = 'Сохранить'/>
+    </fieldset>
+    <p id='add-result'></p>
+  </form>
+</div>
 
  <main id='qr-data-container' class='hidden'>
   <div class='teach-quiz'>
@@ -58,199 +87,11 @@
   </div>
 </main>
 
-<!-- Optional JavaScript -->
-  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<!-- JavaScript -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script> -->
-  <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
   <script src="./js/jQuery.resizableColumns.js"></script>
-  
-  <script>
-      let d = new Date();
-      d.setDate(d.getDate() - 30);
-      document.getElementById('qr-start').valueAsDate = d;
-      document.getElementById('qr-end').valueAsDate = new Date();
-
-      function checkPeriod(){ 
-        document.getElementById('period').classList.toggle('none');
-      }
-      //асинхронное получение списка из Php скрипта
-      function fillTeachersList(){
-        let teachSel = document.querySelector("#teach-select");
-        getTeacherList(`./reports/teachers.php`)
-          .then((data) => {
-            if (data.length > 0) {
-              data.forEach((item)=>{
-                let opt = document.createElement('option');
-                opt.appendChild( document.createTextNode(item) );
-                opt.value = item; 
-                teachSel.appendChild(opt); 
-              });
-            }
-          })
-          .catch(error => console.error(error));
-      }
-
-      function getTeacherList(url) {
-          return fetch(url)
-          .then(response => response.json()); // парсит JSON ответ в Javascript объект
-      }
-
-      fillTeachersList();
-
-      function selectTeacher(e){
-        document.querySelector("#qr-data-container").classList.add('hidden');
-        document.querySelector("#detail-report").classList.add('hidden');
-        let elem = document.querySelector("#teach-select");
-        let teacher_fio = elem.options[elem.selectedIndex].value;
-        let fio_text = elem.options[elem.selectedIndex].text;
-        document.querySelector("#teacher-fio").innerHTML = fio_text;
-        let xmlhttp = new XMLHttpRequest();
-          xmlhttp.onreadystatechange = function() {
-              if (this.readyState == 4 && this.status == 200) {
-                document.querySelector(".qr-data").innerHTML = this.responseText;
-                document.querySelector(".qr-data").style.height = 'auto';
-                document.querySelector("#qr-data-container").classList.remove('hidden');
-                addTeachQuizRowHandlers();
-              }
-          };
-        xmlhttp.open("GET", `./reports/teacher_quiz.php?teacher=${teacher_fio}${getPeriodQuery()}` , true);
-        xmlhttp.send();
-      };
-
-
-
-      document.getElementById('teach-select').addEventListener("change", selectTeacher, false);
-      selectTeacher();
-
-      function addTeachQuizRowHandlers() {
-        if (document.getElementById("teach-quiz-table")) {
-          var rows = document.getElementById("teach-quiz-table").rows;
-          for (i = 0; i < rows.length; i++) {
-            rows[i].addEventListener("click", function(e){
-              let selected = document.querySelector('#qr-body .selected');
-              let teacher_fio = document.querySelector("#teach-select").value;
-              let quizCode = '';
-              if (selected) {
-                selected.classList.remove('selected');
-              }
-              e.target.parentNode.classList.add('selected');
-              let qr_rowData = {};
-              let col_names =[`rNum`, `teacher`, `program`, `level`, `unit`, `gruppa`];
-              Array.prototype.forEach.call(e.target.parentNode.cells, 
-                (elem, i) => { qr_rowData[col_names[i]] = elem.textContent;
-              });
-              quizCode = qr_rowData['program'].trim();
-              quizCode += qr_rowData['level'].trim();
-              quizCode += '_';
-              quizCode += qr_rowData['unit'].trim();
-              showStudentQuizDetais(quizCode, qr_rowData['teacher'].trim(), qr_rowData['gruppa']);
-              document.querySelector("#table-title").innerHTML = 
-              `Анализ тестирования ${quizCode} преподавателя ${teacher_fio}, группа ${qr_rowData['gruppa']}`; 
-            })
-          }
-        };
-      }
-
-      function showStudentQuizDetais(quiz_code, teacher, gruppa) {
-        let xmlhttp = new XMLHttpRequest();
-        let qr_ids = [];
-          xmlhttp.onreadystatechange = function() {
-              if (this.readyState == 4 && this.status == 200) {
-                qr_ids = JSON.parse(this.responseText);
-                buildGruppaTable(qr_ids);
-              }
-          };
-          xmlhttp.open(
-            "GET", 
-            `./reports/get-result-ids-by-gruppa.php?quiz_code=${quiz_code}&teacher=${teacher}&gruppa=${gruppa}${getPeriodQuery()}`,
-            true
-          );
-          xmlhttp.send();
-          document.querySelector("#detail-report").classList.remove('hidden');
-      }
-
-      function buildGruppaTable(ids){
-        document.querySelector("#gruppa-matrix").innerHTML = '';
-        let xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function() {
-          if (this.readyState == 4 && this.status == 200) {
-            document.querySelector("#gruppa-matrix-head").innerHTML = 
-              `<tr><th class='fio-stud'>ФИО курсанта</th> ${this.responseText} 
-              <th>Проходной балл</th><th>Получено баллов</th><th>Результат(%)</th>
-              <th>Статус</th></tr>`;
-          }
-        };
-        xmlhttp.open("GET", `./reports/get-quiz-row.php?qr_id=${ids[0][0]}&is_header=1`, true);
-        xmlhttp.send();
-
-        ids.forEach(function(item, i) {
-          let xmlhttp = new XMLHttpRequest();
-          let isOk = '', res = '';
-          if (parseFloat(item[3]) < parseFloat(item[4])) {
-            isOk = 'bad';
-            res = 'fail';
-          } else {
-            isOk = 'good';
-            res = 'OK';
-          } 
-
-          xmlhttp.onreadystatechange = function() {	
-            if (this.readyState == 4 && this.status == 200) {
-          	     document.querySelector("#gruppa-matrix").innerHTML += 
-            	 `<tr><td>${item[1]}</td> ${this.responseText} 
-               <td class='result-prc'>${item[4]}</td>
-               <td class='result-prc'>${item[3]}</td>
-               <td class='result-prc'>${item[2]}</td>
-               <td class='result-prc ${isOk}'>${res}</td>
-               </tr>`;
-            }
-          };
-          xmlhttp.open("GET", `./reports/get-quiz-row.php?qr_id=${item[0]}`, true);
-          xmlhttp.send();
-        });
-      }
-
-      function getPeriodQuery(){
-        if (!document.getElementById('isPeriod').checked) return ``;
-        let d1 = document.getElementById('qr-start').value;
-        let d2 = document.getElementById('qr-end').value;
-        return `&d1=${d1}&d2=${d2}`;
-      }
-
-      function tableToExcel() {
-        let uri = 'data:application/vnd.ms-excel;base64,', 
-            template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>',
-            base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) },
-            format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) };
-        return function() {
-          table = document.getElementById('matrix-table');
-          let tStr = table.innerHTML;
-          let re = /ans">(.*?)<\/td>/g;
-          matchAll = tStr.matchAll(re); //классный метод matchAll !!!
-          matchAll = Array.from(matchAll);
-          let findStr = matchAll.map(elem=>elem[1]);
-          let points = findStr.map(str=> {
-            let d = str.indexOf('/');
-            let a = parseFloat(str.substr(0, d));
-            let b = parseFloat(str.substr(d+1));
-            return (a/b).toFixed(3);
-          });
-
-          findStr.forEach((elem, i)=>{
-            tStr = tStr.replace(elem, points[i].replace('.', ','));
-          });
-          // console.log(tStr);
-          let ctx = {worksheet: 'Отчет', table: tStr};
-          //window.location.href = uri + base64(format(template, ctx));
-          let link = document.createElement("a");
-          link.download = document.querySelector("#teach-select").value + '.xls';
-          link.href = uri + base64(format(template, ctx));
-          link.click();
-        }
-      };
-
-    </script>
+  <script src="./js/teacherReports.js"></script>
+  <script src="./js/addQuiz.js"></script>
 
 </body>
 </html>
