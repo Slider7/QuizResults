@@ -1,6 +1,8 @@
 <?php
   $d1 = $_GET['d1'];
   $d2 = $_GET['d2'];
+  $teacher = $_GET['teacher'];
+  if ($teacher == 'all') $teacher = '%%';
 
 	error_reporting(E_ALL);
 
@@ -16,7 +18,8 @@
     die("Connection failed: " . $conn->connect_error);
 	}
 
-  $sql = "SELECT * FROM all_quiz_res WHERE CAST(finished_at AS DATE) BETWEEN '$d1' AND '$d2' ORDER BY teacher, quiz_code, gruppa, stud_name";
+  $sql = "SELECT * FROM all_quiz_res WHERE CAST(finished_at AS DATE) BETWEEN '$d1' AND '$d2' AND teacher like '$teacher' " . 
+         " ORDER BY teacher, quiz_code, gruppa, stud_name";
   //echo $sql;
   $result = $conn->query($sql);
   $idx = 1;
@@ -25,8 +28,6 @@
           "<th>Уровень</th><th>Группа</th><th>Unit</th><th>Оценка(%)</th><th>Дата</th><th colspan='2'>Затраченное время</th></tr></thead><tbody id='qr-body'>";
       // output data of each row
       while($row = $result->fetch_assoc()) {
-          // $rest = substr("abcdef", 0, 4); возвращает "abcd"
-          // $pieces = explode(" ", $pizza);
           $parts = explode('_', $row["quiz_code"]);
           $program = substr($parts[0], 0, 2);
           $level = substr($parts[0], 2);

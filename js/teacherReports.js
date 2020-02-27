@@ -38,23 +38,30 @@ function getTeacherList(url) {
 fillTeachersList();
 
 function selectTeacher(e){
+  let flag = document.querySelector('#showAddRep').textContent == 'Дополнительно';
   document.querySelector("#qr-data-container").classList.add('hidden');
-  document.querySelector("#detail-report").classList.add('hidden');
+//  document.querySelector("#detail-report").classList.add('hidden');
   let elem = document.querySelector("#teach-select");
   let teacher_fio = elem.options[elem.selectedIndex].value;
   let fio_text = elem.options[elem.selectedIndex].text;
   document.querySelector("#teacher-fio").innerHTML = fio_text;
-  let xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          document.querySelector(".qr-data").innerHTML = this.responseText;
-          document.querySelector(".qr-data").style.height = 'auto';
-          document.querySelector("#qr-data-container").classList.remove('hidden');
-          addTeachQuizRowHandlers();
-        }
-    };
-  xmlhttp.open("GET", `./reports/teacher_quiz.php?teacher=${teacher_fio}${getPeriodQuery()}` , true);
-  xmlhttp.send();
+  if (!flag) {
+    showQuizzes();
+  } else {
+    let xmlhttp = new XMLHttpRequest();
+      xmlhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            document.querySelector(".qr-data").innerHTML = this.responseText;
+            document.querySelector(".qr-data").style.height = 'auto';
+            document.querySelector("#qr-data-container").classList.remove('hidden');
+            document.querySelector("#detail-report").classList.remove('off');
+            document.querySelector(".qr-detail").classList.remove('off');
+            addTeachQuizRowHandlers();
+          }
+      };
+    xmlhttp.open("GET", `./reports/teacher_quiz.php?teacher=${teacher_fio}${getPeriodQuery()}` , true);
+    xmlhttp.send();
+  };
 };
 
 document.getElementById('teach-select').addEventListener("change", selectTeacher, false);
@@ -142,6 +149,7 @@ function buildGruppaTable(ids){
          <td class='result-prc'>${item[2]}</td>
          <td class='result-prc ${isOk}'>${res}</td>
          </tr>`;
+         document.querySelector("#xlsMatrixBtn").classList.remove('off');
       }
     };
     xmlhttp.open("GET", `./reports/get-quiz-row.php?qr_id=${item[0]}`, true);

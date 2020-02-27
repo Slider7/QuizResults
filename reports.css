@@ -97,6 +97,10 @@ th{
 .hidden{
   visibility: hidden;
 }
+.off{
+  display: none;
+}
+
 .none{
   display: none;
 }

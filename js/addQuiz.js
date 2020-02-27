@@ -37,10 +37,17 @@ function showAddRep(){
   document.querySelector("#qr-data-container").classList.toggle('hidden');
   document.querySelector(".report-section").classList.toggle('hidden');
   document.querySelector('.add-quiz-form').classList.add('hidden-form');
+  document.querySelector(".teach-quiz").classList.remove('off');
   if (showAddRepBtn.textContent == 'Дополнительно') {
     showAddRepBtn.textContent = 'Скрыть доп.функции';
+    document.querySelector("#detail-report").classList.add('off');
+    document.querySelector(".qr-detail").classList.add('off');
+    showQuizzes();
   } else {
     showAddRepBtn.textContent = 'Дополнительно';
+    document.querySelector("#adv-report").classList.add('off');
+    document.querySelector(".adv-detail").classList.add('off');
+    selectTeacher();
   }
 };
 

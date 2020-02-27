@@ -74,7 +74,12 @@
     <div class="qr-data"></div>
   </div>
   
-  <div id='detail-report' class='hidden'>
+  <div id='adv-report'>
+    <div class="adv-detail">
+    </div>
+  </div>
+
+  <div id='detail-report'>
     <div class="qr-detail">
       <table id='matrix-table'>
         <caption id='table-title'></caption>
@@ -83,7 +88,7 @@
       </table>
     </div>
     <hr>
-    <button onclick='tableToExcel()()'>Экспорт таблицы в Excel</button>
+    <button id= 'xlsMatrixBtn' onclick="tableToExcel()()" class="off">Экспорт таблицы в Excel</button>
   </div>
 </main>
 
@@ -91,7 +96,9 @@
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="./js/jQuery.resizableColumns.js"></script>
   <script src="./js/teacherReports.js"></script>
+  <script src="./js/advReports.js"></script>
   <script src="./js/addQuiz.js"></script>
+
 
 </body>
 </html>
