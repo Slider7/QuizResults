@@ -25,10 +25,10 @@ function addQuiz() {
 
 addQuizBtn.addEventListener("click", function(e){
   document.querySelector('.add-quiz-form').classList.toggle('hidden-form');
-  if (addQuizBtn.textContent == 'Показать форму Quiz-a') {
+  if (addQuizBtn.textContent == 'Добавить Quiz') {
     addQuizBtn.textContent = 'Закрыть форму Quiz-a';
   } else {
-    addQuizBtn.textContent = 'Показать форму Quiz-a';
+    addQuizBtn.textContent = 'Добавить Quiz';
   }
 });
 

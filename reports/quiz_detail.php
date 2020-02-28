@@ -18,7 +18,7 @@
 	$result = $conn->query($sql);
   $idx = 1;
   if ($result->num_rows > 0) {
-    echo "<p>Данные тестирования - вопросы и ответы: </p>";
+    echo "<p class='rep-title'>Данные тестирования - вопросы и ответы: </p>";
       echo "<table class='resizable qr-detail-table'><thead><tr><th>№</th><th>Quiz-код</th><th>ФИО студента</th><th>Текст вопроса</th>".
           "<th>Ответ</th><th>Набрано баллов</th><th>Пороговый балл</th></tr></thead>";
       // output data of each row

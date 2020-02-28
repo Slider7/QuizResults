@@ -38,7 +38,7 @@ form p, label{
   justify-content: center;
 
 }
-#detail-report{
+#detail-report, #adv-report{
   margin: 8px auto;
   padding: 5px;
   box-sizing: border-box;
@@ -77,7 +77,7 @@ th{
   height: 250px;
   overflow-y: auto;
 }
-#qr-list-title, #detail-report h4{
+#qr-list-title, .rep-title, #detail-report h4{
   text-align: center;
   padding: 4px 0;
   color: navy;
@@ -235,4 +235,14 @@ th{
 }
 .hidden-form{
   display: none;
+}
+.rep-table .teach-avg td{
+  font-weight: bold;
+  background-color: forestgreen;
+  text-align: right;
+}
+
+.rep-table .gruppa-avg td{
+  background-color: lightgreen;
+  text-align: right;
 }
