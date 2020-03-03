@@ -150,6 +150,9 @@ class QuizReportGenerator
             if ($field->getTitle() === 'Teacher') {$quizData['teacher'] =  $field->getValue();};
             if ($field->getTitle() === 'Unit') {$quizData['unit'] =  $field->getValue();};
             if ($field->getTitle() === 'Group') {$quizData['gruppa'] =  $field->getValue();};
+            if ($field->getTitle() === 'Age') {$quizData['age'] =  $field->getValue();};
+            if ($field->getTitle() === 'Phone') {$quizData['phone'] =  $field->getValue();};
+            if ($field->getTitle() === 'Email') {$quizData['email'] =  $field->getValue();};
             //-------------------------------------
         }
         return $result;
@@ -223,6 +226,9 @@ private function saveQuizToDB($quizData, $quests)
         //---------QUIZRESULT SAVE------------
         $studName = $conn->real_escape_string($quizData['stud_name']);
         $gruppa = $quizData['gruppa']; 
+        $age = isset($quizData['age']) ? $quizData['age'] : -1;
+        $phone = isset($quizData['phone']) ? $quizData['phone'] : 'none';
+        $email = isset($quizData['email']) ? $quizData['email'] : 'none';
         $quiz_id = -1;
         $qr_id = -1;
         $quiz_code = $quizData['program'] . '_' . $quizData['unit'];
@@ -251,8 +257,9 @@ private function saveQuizToDB($quizData, $quests)
             exit('duplicate results!'); 
         };
 
-        $sql = "INSERT INTO quiz_results (quiz_id, teacher, stud_name, user_score, pass_score, quiz_time, finished_at, stud_percent, gruppa) " .
-               " VALUES ('$quiz_id', '$teacher', '$studName', '$user_score', '$pass_score', '$quiz_time', '$finished_at', '$stud_percent', '$gruppa')";
+        $sql = "INSERT INTO quiz_results (quiz_id, teacher, stud_name, user_score, pass_score, quiz_time, finished_at, stud_percent, gruppa, age, phone, email) " .
+               " VALUES ('$quiz_id', '$teacher', '$studName', '$user_score', '$pass_score', '$quiz_time',
+                         '$finished_at', '$stud_percent', '$gruppa', '$age', '$phone', '$email' )";
           if ($conn->query($sql) === TRUE) {
             $qr_id = $conn->insert_id;
           } else {

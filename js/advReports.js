@@ -34,17 +34,17 @@ function addQuizResultRowHandlers() {
         }
         e.target.parentNode.classList.add('selected');
         let qr_rowData = {};
-        let col_names =[`rNum`, `quiz_code`, `fio`, `stud_code`, `teacher`, `user_score`, `pass_score`, `stud_percent`, `finished_at`, `quiz_time`, `qr_id`];
+        let col_names =[`rNum`, `stud_name`, `fio`, `stud_code`, `teacher`, `user_score`, `pass_score`, `stud_percent`, `finished_at`, `quiz_time`, `qr_id`];
         Array.prototype.forEach.call(e.target.parentNode.cells, 
           (elem, i) => { qr_rowData[col_names[i]] = elem.textContent;
         });
-        showQuizDetais(qr_rowData['qr_id']);
+        showQuizDetais(qr_rowData['qr_id'], qr_rowData['stud_name']);
       })
     }
   };
 }
 
-function showQuizDetais(qr_id) {
+function showQuizDetais(qr_id, fio) {
   let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -52,7 +52,7 @@ function showQuizDetais(qr_id) {
           $('table.resizable').resizableColumns();
         }
     };
-    xmlhttp.open("GET", `./reports/quiz_detail.php?qr_id=${qr_id}` , true);
+    xmlhttp.open("GET", `./reports/quiz_detail.php?qr_id=${qr_id}&fio=${fio}` , true);
     xmlhttp.send();
 }
 
