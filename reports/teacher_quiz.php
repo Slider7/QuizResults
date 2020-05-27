@@ -6,16 +6,12 @@
 	error_reporting(E_ALL);
 
 	$err_msq = 'OK';
-  $servername = "localhost";
-  $username = "root";
-  $password = "mysql";
-  $dbname = "QuizReports";
-        
-  // Create connection
-  $conn = new mysqli($servername, $username, $password, $dbname);
+	$db = parse_ini_file('../../../conf/connect.ini');
+	// Create connection
+	$conn = new mysqli($db['host'], $db['user'], $db['pass'], $db['name']);
 	if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-	}
+		die("Connection failed: " . $conn->connect_error);
+	};
   if ($teacher == 'all') {
     $teacher = '%%';
   };

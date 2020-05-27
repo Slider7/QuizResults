@@ -25,16 +25,12 @@ $rows = [];
 $d1 = $_GET['d1'];
 $d2 = $_GET['d2'];
 
-  $servername = "localhost";
-  $username = "root";
-  $password = "mysql";
-  $dbname = "QuizReports";
-        
-  // Create connection
-  $conn = new mysqli($servername, $username, $password, $dbname);
-  if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-  }
+$db = parse_ini_file('../../../conf/connect.ini');
+// Create connection
+$conn = new mysqli($db['host'], $db['user'], $db['pass'], $db['name']);
+if ($conn->connect_error) {
+	die("Connection failed: " . $conn->connect_error);
+};
 
   $sql = "SELECT q.q_id, q.quiz_code, q.teacher, q.q_text, FORMAT(avg(q.result), 2, 'ru_RU') as avg_prc FROM quiz_detail q " .
           " WHERE CAST(q.finished_at AS DATE) BETWEEN '$d1' AND '$d2' group by q.teacher, q.q_id order by q.quiz_code, q.teacher, q.q_id";

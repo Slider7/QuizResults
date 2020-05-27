@@ -3,16 +3,12 @@
   $is_header = $_GET['is_header'];
 
   $err_msq = 'OK';
-  $servername = "localhost";
-  $username = "root";
-  $password = "mysql";
-  $dbname = "QuizReports";
-        
-  // Create connection
-  $conn = new mysqli($servername, $username, $password, $dbname);
+	$db = parse_ini_file('../../../conf/connect.ini');
+	// Create connection
+	$conn = new mysqli($db['host'], $db['user'], $db['pass'], $db['name']);
 	if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-	}
+		die("Connection failed: " . $conn->connect_error);
+	};
 
   $sql = "SELECT SUBSTRING(q_text, 1, 3) as qtext,  concat(award_points, '/', maxpoint) as points, result FROM quiz_detail2 WHERE qr_id = '$qr_id' order by q_text";
   //echo $sql;

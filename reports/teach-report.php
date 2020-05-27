@@ -7,16 +7,12 @@ header("Content-Disposition: attachment; filename=filename.xls");
 header("Pragma: no-cache"); 
 header("Expires: 0");
 
-  $servername = "localhost";
-  $username = "root";
-  $password = "mysql";
-  $dbname = "QuizReports";
-        
-  // Create connection
-  $conn = new mysqli($servername, $username, $password, $dbname);
-	if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-	}
+$db = parse_ini_file('../../../conf/connect.ini');
+// Create connection
+$conn = new mysqli($db['host'], $db['user'], $db['pass'], $db['name']);
+if ($conn->connect_error) {
+	die("Connection failed: " . $conn->connect_error);
+};
 
   $sql = "SELECT teacher, quiz_code, gruppa, cast(avg(stud_percent) as decimal(6, 3)) as avg_prc FROM all_quiz_res " . 
          " WHERE CAST(finished_at AS DATE) BETWEEN '$d1' AND '$d2' group by teacher, quiz_code, gruppa " . 

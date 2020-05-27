@@ -6,16 +6,12 @@
 
 
   $err_msq = 'OK';
-  $servername = "localhost";
-  $username = "root";
-  $password = "mysql";
-  $dbname = "QuizReports";
-        
-  // Create connection
-  $conn = new mysqli($servername, $username, $password, $dbname);
+	$db = parse_ini_file('../../../conf/connect.ini');
+	// Create connection
+	$conn = new mysqli($db['host'], $db['user'], $db['pass'], $db['name']);
 	if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-	}
+		die("Connection failed: " . $conn->connect_error);
+	};
   
   if (isset($d1) && isset($d2)){
     $sql = "SELECT * FROM `quiz_results` WHERE teacher like '$teacher' AND CAST(finished_at AS DATE) BETWEEN '$d1' AND '$d2' " . 

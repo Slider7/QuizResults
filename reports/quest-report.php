@@ -20,18 +20,12 @@ header('Pragma: public');
 $header = array('№', 'ФИО курсанта', 'Преподаватель', 'Program', 'Level', 'Group', 
                 'Unit', 'Progress', 'Дата', 'Затраченное время');
 
-
-
-  $servername = "localhost";
-  $username = "root";
-  $password = "mysql";
-  $dbname = "QuizReports";
-        
-  // Create connection
-  $conn = new mysqli($servername, $username, $password, $dbname);
-  if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-  }
+$db = parse_ini_file('../../../conf/connect.ini');
+// Create connection
+$conn = new mysqli($db['host'], $db['user'], $db['pass'], $db['name']);
+if ($conn->connect_error) {
+	die("Connection failed: " . $conn->connect_error);
+};
 
   $sql = "SELECT * FROM all_quiz_res WHERE CAST(finished_at AS DATE) BETWEEN '$d1' AND '$d2' ORDER BY teacher, quiz_code, gruppa, stud_name";
           

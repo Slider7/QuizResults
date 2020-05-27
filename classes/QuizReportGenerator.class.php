@@ -166,63 +166,21 @@ class QuizReportGenerator
         return $this->takerInfo && $this->takerInfo->doesContainUserEmail();
     }
 
-
-    //--------------SAVE TO DB---------------
-    /*
-    $quizData['quiz_code']
-    $quizData['stud_name']
-    $quizData['gruppa']
-    $quizData['user_score']
-    $quizData['pass_score']
-    $quizData['qiuz_time']
-    --CURRENT_TIMESTAMP-- $quizData['finished_at']
-    $quizData['program']
-    $quizData['teacher']
-
-    $quests:
-      $item[0] = question text;
-      $item[1] = correctAnswer;
-      $item[2] = userAnswer;
-      $item[3] = awardedPoints;
-    */
 private function saveQuizToDB($quizData, $quests)
     {   
         $err_msq = '';
-        $servername = "localhost";
-        $username = "root";
-        $password = "mysql";
-        $dbname = "QuizReports";
-        
+        $db = parse_ini_file('../../conf/connect.ini');
+        $user = $db['user'];
+        $pass = $db['pass'];
+        $dbname = $db['name'];
+        $host = $db['host'];
         // Create connection
-        $conn = new mysqli($servername, $username, $password, $dbname);
+        $conn = new mysqli($host, $user, $pass, $dbname);
         // Check connection 
         if ($conn->connect_error) {
           $err_msq = 'Error on connecting to MySQL DB.';
         }
         
-     //---------STUDENT CHECK & SAVE------------
-     /* // в будущем добавим таблицу студент с кодом и переделаем
-        // пока - работаем без таблицы студент 
-        $studCode = $quizData['stud_code']; - работаем без таблицы студент
-        $gruppa = $quizData['gruppa']; 
-        
-        $studName = $conn->real_escape_string($quizData['stud_name']);
-        $stud_id = 0; 
-      
-        $sql = "SELECT stud_id FROM student WHERE stud_code = '$studCode'";
-        $temp_data = $conn->query($sql);
-        if ($temp_data->num_rows > 0) {
-           $stud_id = $temp_data->fetch_object()->stud_id;
-        } else {
-            $sql = "INSERT INTO student (FIO, stud_code) VALUES ('$studName', '$studCode')";
-            if ($conn->query($sql) === TRUE) {
-                    $stud_id = $conn->insert_id;
-                } else {
-                    $err_msq = $err_msq . PHP_EOL . "Error: " . $sql . "<br>" . $conn->error;
-                }
-        }
-      */
-
         //---------QUIZRESULT SAVE------------
         $studName = $conn->real_escape_string($quizData['stud_name']);
         $gruppa = $quizData['gruppa']; 
@@ -280,7 +238,7 @@ private function saveQuizToDB($quizData, $quests)
           //--------------------QUESTIONS--------------------------
           $sql = "SELECT DISTINCT q_id FROM question WHERE q_text like '$qtext%' and quiz_code = '$quiz_code'" ;
           $temp_data = $conn->query($sql);
-          $err_msq = $err_msq . PHP_EOL . $sql . ' $$$data: '. json_encode($temp_data->num_rows);
+          $err_msq = $err_msq . PHP_EOL . $sql . ' $$$data: '. json_encode($temp_data->num_rows) . ' $$$db: '. json_encode($db);
           if ($temp_data->num_rows > 0) {
             $q_id = $temp_data->fetch_object()->q_id;
           } else {
